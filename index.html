@@ -416,7 +416,7 @@
         `;
         
         try {
-            let fetchUrl = `${BACKEND_URL}/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
+            let fetchUrl = `https://mejv.pro/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
             if (currentPlatform === 'youtube' && selectedFormat === 'video') {
                 fetchUrl += `&quality=${selectedQuality}`;
             }
