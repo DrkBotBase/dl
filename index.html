@@ -169,6 +169,24 @@
         <span id="toast-message">Notificación</span>
     </div>
 
+    <div id="image-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div class="bg-[#0d1424] border border-blue-500/30 rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="flex items-center justify-between p-4 border-b border-slate-800">
+                <h3 class="text-white font-bold text-sm flex items-center gap-2">
+                    <i data-lucide="images" class="w-4 h-4 text-[#aaff00]"></i>
+                    Imágenes detectadas (<span id="modal-image-count">0</span>)
+                </h3>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-700/50 p-2 rounded-full transition-colors flex items-center justify-center">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div id="modal-images-container" class="p-4 overflow-y-auto space-y-4 flex-1 custom-scrollbar">
+            </div>
+        </div>
+    </div>
+    
+
   <script>
     lucide.createIcons();
 
@@ -183,6 +201,11 @@
     const toast = document.getElementById('toast');
     const toastMessage = document.getElementById('toast-message');
     const toastIcon = document.getElementById('toast-icon');
+
+    const imageModal = document.getElementById('image-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const modalImagesContainer = document.getElementById('modal-images-container');
+    const modalImageCount = document.getElementById('modal-image-count');
 
     let currentPlatform = null; 
     let selectedFormat = null; 
@@ -267,7 +290,7 @@
             const videoBtn = document.createElement('button');
             videoBtn.type = 'button';
             videoBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-200/80 bg-slate-200/10 text-white font-medium text-xs transition-all shadow-sm";
-            videoBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-white"></i><span>Vídeo</span>`;
+            videoBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-white"></i><span>Vídeo / Carrusel</span>`;
             formatContainer.appendChild(videoBtn);
             selectFormat('video', videoBtn);
         }
@@ -321,16 +344,48 @@
         });
     });
 
+    function openModal() {
+        imageModal.classList.remove('hidden');
+        imageModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        imageModal.classList.add('hidden');
+        imageModal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    closeModalBtn.addEventListener('click', closeModal);
+
+
+    function downloadSingleImage(imgUrl, index) {
+        showToast(`Descargando imagen ${index + 1}...`, false);
+        const a = document.createElement('a');
+        a.href = imgUrl;
+        a.setAttribute('download', `tiktok_img_${index + 1}.jpg`);
+        a.setAttribute('target', '_blank');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
     videoUrlInput.addEventListener('input', (e) => {
-        const url = e.target.value;
-        currentUrl = url;
-        const platform = detectPlatform(url);
-        if (platform) {
-            renderFormatOptions(platform);
-        } else {
-            optionsPanel.classList.add('hidden');
-            downloadBtn.classList.add('hidden');
-        }
+      const url = e.target.value;
+      currentUrl = url;
+      const platform = detectPlatform(url);
+      
+      if (!imageModal.classList.contains('hidden')) {
+        closeModal();
+        modalImagesContainer.innerHTML = '';
+      }
+      
+      if (platform) {
+        renderFormatOptions(platform);
+      } else {
+        optionsPanel.classList.add('hidden');
+        downloadBtn.classList.add('hidden');
+      }
     });
 
     if (pasteBtn) {
@@ -360,24 +415,48 @@
             <span>Conectando...</span>
         `;
         
-        const BACKEND_URL = 'https://mejv.pro';
-        
         try {
             let fetchUrl = `${BACKEND_URL}/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
-            
             if (currentPlatform === 'youtube' && selectedFormat === 'video') {
                 fetchUrl += `&quality=${selectedQuality}`;
             }
-
+  
             const response = await fetch(fetchUrl);
             const data = await response.json();
-
+  
             if (!response.ok || !data.status) {
                 throw new Error(data.error || 'Error al procesar el enlace.');
             }
+  
+            if (data.type === 'images' && data.data.images && data.data.images.length > 0) {
+                showToast(`¡Se encontraron ${data.data.images.length} imágenes!`, false);
+                
+                modalImagesContainer.innerHTML = '';
+                modalImageCount.textContent = data.data.images.length;
 
-            showToast(`¡Descarga iniciada!`, false);
-            window.location.href = data.data.url;
+                data.data.images.forEach((imgUrl, index) => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-800/50 border border-slate-700/50 rounded-xl p-2 flex flex-col gap-2";
+                    card.innerHTML = `
+                        <img src="${imgUrl}" alt="Imagen ${index + 1}" class="w-full h-48 object-cover rounded-lg bg-slate-900" loading="lazy">
+                        <button class="w-full bg-[#0066ff] hover:bg-blue-600 text-white font-bold text-xs py-2 rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="download" class="w-4 h-4"></i> Descargar Imagen ${index + 1}
+                        </button>
+                    `;
+                    
+                    const btn = card.querySelector('button');
+                    btn.onclick = () => downloadSingleImage(imgUrl, index);
+
+                    modalImagesContainer.appendChild(card);
+                });
+
+                openModal();
+                lucide.createIcons();
+
+            } else {
+                showToast(`¡Descarga iniciada!`, false);
+                window.location.href = data.data.url;
+            }
 
         } catch (error) {
             showToast(error.message, true);
