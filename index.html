@@ -34,7 +34,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css">
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
@@ -201,7 +203,109 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Modal de Bienvenida / Registro -->
+    <div id="welcome-modal" class="fixed inset-0 bg-[#070b14]/95 backdrop-blur-md z-[200] hidden items-center justify-center p-6">
+        <div class="bg-[#0d1424] border border-blue-500/30 rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center">
+            
+            <!-- Icono y Título -->
+            <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-[#aaff00] rounded-full mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
+                <i data-lucide="bar-chart-2" class="w-8 h-8 text-black"></i>
+            </div>
+            <h2 class="text-white font-extrabold text-xl mb-1">Ayúdanos a mejorar</h2>
+            <p class="text-slate-400 text-xs mb-6 leading-relaxed">
+                Déjanos tu número para identificar tu cuenta. Así sabremos qué funciones son las más usadas y podremos mejorar el servicio para ti.
+            </p>
+    
+            <!-- Input de Teléfono -->
+            <div class="mb-2 text-left">
+                <input type="tel" id="welcome-phone" class="w-full bg-[#070b14] border border-slate-700 text-white rounded-xl py-3 px-4 text-sm focus:border-[#aaff00] focus:outline-none transition-colors">
+            </div>
+            <p class="text-[10px] text-slate-500 text-left mb-5 px-1">
+                * No enviaremos spam ni te contactaremos sin tu permiso.
+            </p>
+    
+            <!-- Botones -->
+            <div class="space-y-3">
+                <button id="welcome-submit-btn" class="w-full btn-gradient py-3 rounded-xl font-bold text-sm text-black transition-all active:scale-95">
+                    Continuar
+                </button>
+                <button id="welcome-guest-btn" class="w-full bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-medium py-2.5 rounded-xl transition-colors">
+                    Entrar como invitado
+                </button>
+            </div>
+        </div>
+    </div>
+  <script>
+    // ─── CONFIGURACIÓN DEL MODAL DE BIENVENIDA ───
+    const welcomeModal = document.getElementById('welcome-modal');
+    const phoneInput = document.getElementById('welcome-phone');
+    const submitBtn = document.getElementById('welcome-submit-btn');
+    const guestBtn = document.getElementById('welcome-guest-btn');
+    
+    let iti; // Instancia de intl-tel-input
+    
+    // Inicializar la librería de teléfonos
+    if (phoneInput) {
+        iti = window.intlTelInput(phoneInput, {
+            initialCountry: "auto",
+            geoIpLookup: function(callback) {
+                fetch("https://ipinfo.io/json")
+                    .then(res => res.json())
+                    .then(data => callback(data.country))
+                    .catch(() => callback("us"));
+            },
+            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js",
+            preferredCountries: ["co", "mx", "us", "es"],
+            separateDialCode: true,
+        });
+    }
+    
+    // Función para obtener el ID de usuario (teléfono o "guest")
+    function getUserId() {
+        return localStorage.getItem('mejv_user_id');
+    }
+    
+    // Función para guardar el ID
+    function setUserId(id) {
+        localStorage.setItem('mejv_user_id', id);
+    }
+    
+    // Abrir el modal si no hay usuario registrado
+    function checkWelcome() {
+        if (!getUserId()) {
+            welcomeModal.classList.remove('hidden');
+            welcomeModal.classList.add('flex');
+        }
+    }
+    
+    // Cerrar modal y guardar ID
+    function closeWelcome(id) {
+        setUserId(id);
+        welcomeModal.classList.add('hidden');
+        welcomeModal.classList.remove('flex');
+        lucide.createIcons(); // Re-renderizar iconos si es necesario
+    }
+    
+    // Evento: Botón "Comenzar" (con teléfono)
+    submitBtn.addEventListener('click', () => {
+        if (!iti || !iti.isValidNumber()) {
+            // Puedes usar un toast aquí en lugar de alert
+            alert('Por favor, ingresa un número de teléfono válido.');
+            return;
+        }
+        const fullNumber = iti.getNumber(); // Ej: +573001234567
+        closeWelcome(fullNumber);
+    });
+    
+    // Evento: Botón "Invitado"
+    guestBtn.addEventListener('click', () => {
+        closeWelcome('guest');
+    });
+    
+    // Verificar al cargar la página
+    document.addEventListener('DOMContentLoaded', checkWelcome);
+  </script>
   <script>
     lucide.createIcons();
 
@@ -444,7 +548,7 @@
 
     downloadBtn.addEventListener('click', async () => {
         if (!selectedFormat || !currentPlatform || !currentUrl) return;
-
+        
         const originalHtml = downloadBtn.innerHTML;
         downloadBtn.disabled = true;
         downloadBtn.classList.add('opacity-80', 'cursor-not-allowed');
@@ -457,7 +561,19 @@
         `;
         
         try {
-            let fetchUrl = `https://mejv.pro/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
+            const userId = getUserId() || 'guest';
+            
+            fetch(`https://dl.mejv.pro/api/track-usage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                  userId: userId,
+                  platform: currentPlatform
+                }),
+                keepalive: true
+            }).catch(err => console.warn('No se pudo registrar el uso:', err));
+            
+            let fetchUrl = `https://mjfood.mejv.pro/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
             if (currentPlatform === 'youtube' && selectedFormat === 'video') {
                 fetchUrl += `&quality=${selectedQuality}`;
             }
