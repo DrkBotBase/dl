@@ -86,7 +86,7 @@
                     
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-2">Selecciona el formato:</label>
-                        <div id="format-container" class="grid grid-cols-2 gap-3">
+                        <div id="format-container" class="grid grid-cols-2 gap-4">
                         </div>
                     </div>
 
@@ -120,10 +120,22 @@
                     <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Spotify</span>
                 </div>
                 <div class="flex flex-col items-center space-y-2 group cursor-pointer">
-                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-green-500/50 group-hover:bg-green-500/10 transition-all duration-300 shadow-lg">
+                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-slate-500/20 flex items-center justify-center group-hover:border-slate-200/50 group-hover:bg-slate-200/10 transition-all duration-300 shadow-lg">
                         <i class="fa-brands fa-tiktok text-2xl text-white-500"></i>
                     </div>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Spotify</span>
+                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">TikTok</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-red-500/50 group-hover:bg-red-500/10 transition-all duration-300 shadow-lg">
+                        <i class="fa-brands fa-pinterest text-2xl text-red-500"></i>
+                    </div>
+                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Pinterest</span>
+                </div>
+                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-pink-500/50 group-hover:bg-pink-500/10 transition-all duration-300 shadow-lg">
+                        <i class="fa-brands fa-instagram text-2xl text-pink-500"></i>
+                    </div>
+                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Instagram</span>
                 </div>
             </div>
 
@@ -168,9 +180,11 @@
         <i data-lucide="info" class="w-4 h-4 text-[#aaff00]" id="toast-icon"></i>
         <span id="toast-message">Notificación</span>
     </div>
-
+    
+    <!-- Modal para Carrusel de Imágenes -->
     <div id="image-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div class="bg-[#0d1424] border border-blue-500/30 rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Header del Modal -->
             <div class="flex items-center justify-between p-4 border-b border-slate-800">
                 <h3 class="text-white font-bold text-sm flex items-center gap-2">
                     <i data-lucide="images" class="w-4 h-4 text-[#aaff00]"></i>
@@ -181,11 +195,12 @@
                 </button>
             </div>
             
+            <!-- Contenedor scrolleable de imágenes -->
             <div id="modal-images-container" class="p-4 overflow-y-auto space-y-4 flex-1 custom-scrollbar">
+                <!-- Las imágenes se inyectan aquí dinámicamente -->
             </div>
         </div>
     </div>
-    
 
   <script>
     lucide.createIcons();
@@ -231,16 +246,20 @@
             toast.classList.add('opacity-0', 'pointer-events-none');
         }, 3500);
     }
-
+    
+    // 1: Detectar url
     function detectPlatform(url) {
         const cleanUrl = url.trim().toLowerCase();
         if (!cleanUrl) return null;
         if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) return 'youtube';
         if (cleanUrl.includes('spotify.com')) return 'spotify';
         if (cleanUrl.includes('tiktok.com')) return 'tiktok';
+        if (cleanUrl.includes('pinterest.com') || cleanUrl.includes('pin.it')) return 'pinterest';
+        if (cleanUrl.includes('instagram.com')) return 'instagram';
         return null;
     }
-
+    
+    // 2: Renderizar
     function renderFormatOptions(platform) {
         currentPlatform = platform;
         selectedFormat = null;
@@ -256,6 +275,12 @@
         } else if (platform === 'tiktok') {
             platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-slate-200/20 text-white border border-slate-200/30";
             platformBadge.innerHTML = `<i class="fa-brands fa-tiktok text-sm"></i> <span>TikTok</span>`;
+        } else if (platform === 'pinterest') {
+            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-400/30";
+            platformBadge.innerHTML = `<i class="fa-brands fa-pinterest text-sm"></i> <span>Pinterest</span>`;
+        } else if (platform === 'instagram') {
+            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30";
+            platformBadge.innerHTML = `<i class="fa-brands fa-instagram text-sm"></i> <span>Instagram</span>`;
         }
 
         formatContainer.innerHTML = '';
@@ -263,36 +288,52 @@
         if (platform === 'youtube') {
             formatContainer.className = "grid grid-cols-2 gap-3";
             
-            const audioBtn = document.createElement('button');
-            audioBtn.type = 'button';
-            audioBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all";
-            audioBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-blue-400"></i><span>Audio</span>`;
-            audioBtn.onclick = () => selectFormat('audio', audioBtn);
+            const ytaBtn = document.createElement('button');
+            ytaBtn.type = 'button';
+            ytaBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all";
+            ytaBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-blue-400"></i><span>Audio</span>`;
+            ytaBtn.onclick = () => selectFormat('audio', ytaBtn);
 
-            const videoBtn = document.createElement('button');
-            videoBtn.type = 'button';
-            videoBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all";
-            videoBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-[#aaff00]"></i><span>Vídeo</span>`;
-            videoBtn.onclick = () => selectFormat('video', videoBtn);
+            const ytvBtn = document.createElement('button');
+            ytvBtn.type = 'button';
+            ytvBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all";
+            ytvBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-[#aaff00]"></i><span>Vídeo</span>`;
+            ytvBtn.onclick = () => selectFormat('video', ytvBtn);
 
-            formatContainer.appendChild(audioBtn);
-            formatContainer.appendChild(videoBtn);
+            formatContainer.appendChild(ytaBtn);
+            formatContainer.appendChild(ytvBtn);
         } else if (platform === 'spotify') {
             formatContainer.className = "grid grid-cols-1 gap-3";
-            const audioBtn = document.createElement('button');
-            audioBtn.type = 'button';
-            audioBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-blue-500/80 bg-blue-600/20 text-white font-medium text-xs transition-all shadow-sm shadow-blue-500/30";
-            audioBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-blue-400"></i><span>Audio</span>`;
-            formatContainer.appendChild(audioBtn);
-            selectFormat('audio', audioBtn);
+            const spBtn = document.createElement('button');
+            spBtn.type = 'button';
+            spBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-green-500/80 bg-green-600/20 text-green-400 font-medium text-xs transition-all shadow-sm shadow-green-500/30";
+            spBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-green-400"></i><span>Audio</span>`;
+            formatContainer.appendChild(spBtn);
+            selectFormat('audio', spBtn);
         } else if (platform === 'tiktok') {
             formatContainer.className = "grid grid-cols-1 gap-3";
-            const videoBtn = document.createElement('button');
-            videoBtn.type = 'button';
-            videoBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-200/80 bg-slate-200/10 text-white font-medium text-xs transition-all shadow-sm";
-            videoBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-white"></i><span>Vídeo / Carrusel</span>`;
-            formatContainer.appendChild(videoBtn);
-            selectFormat('video', videoBtn);
+            const ttBtn = document.createElement('button');
+            ttBtn.type = 'button';
+            ttBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-200/80 bg-slate-200/10 text-white font-medium text-xs transition-all shadow-sm";
+            ttBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-red-400"></i><span>Vídeo / Carrusel</span>`;
+            formatContainer.appendChild(ttBtn);
+            selectFormat('video', ttBtn);
+        } else if (platform === 'pinterest') {
+            formatContainer.className = "grid grid-cols-1 gap-3";
+            const pinBtn = document.createElement('button');
+            pinBtn.type = 'button';
+            pinBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-red-400/80 bg-red-400/10 text-red-400 font-medium text-xs transition-all shadow-sm";
+            pinBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-red-400"></i><span>Vídeo / Carrusel</span>`;
+            formatContainer.appendChild(pinBtn);
+            selectFormat('image', pinBtn);
+        } else if (platform === 'instagram') {
+            formatContainer.className = "grid grid-cols-1 gap-3";
+            const inBtn = document.createElement('button');
+            inBtn.type = 'button';
+            inBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-pink-200/80 bg-pink-400/10 text-pink-400 font-medium text-xs transition-all shadow-sm";
+            inBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-pink-400"></i><span>Vídeo / Carrusel</span>`;
+            formatContainer.appendChild(inBtn);
+            selectFormat('image', inBtn);
         }
 
         optionsPanel.classList.remove('hidden');
@@ -355,7 +396,7 @@
         imageModal.classList.remove('flex');
         document.body.style.overflow = '';
     }
-
+    
     closeModalBtn.addEventListener('click', closeModal);
 
 
@@ -416,7 +457,7 @@
         `;
         
         try {
-            let fetchUrl = `https://mejv.pro/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
+            let fetchUrl = `${BACKEND_URL}/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
             if (currentPlatform === 'youtube' && selectedFormat === 'video') {
                 fetchUrl += `&quality=${selectedQuality}`;
             }
