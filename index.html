@@ -324,10 +324,14 @@
 
   function checkSharedLink() {
     const params = new URLSearchParams(window.location.search);
-    const sharedUrl = params.get('url');
-    if (!sharedUrl) return;
-
-    console.log('Enlace recibido:', sharedUrl);
+    let sharedUrl = params.get('url') || params.get('text') || params.get('title') || '';
+    const urlMatch = sharedUrl.match(/https?:\/\/[^\s]+/);
+    
+    if (urlMatch) {
+        sharedUrl = urlMatch[0];
+    } else {
+        return;
+    }
 
     const input = document.getElementById('video-url');
     if (!input) return;
@@ -336,7 +340,7 @@
     input.dispatchEvent(new Event('input'));
 
     if (typeof showToast === 'function') {
-      showToast('Enlace cargado automáticamente');
+        showToast('Enlace cargado');
     }
   }
 
