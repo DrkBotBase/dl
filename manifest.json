@@ -18,7 +18,7 @@
     }
   ],
   "share_target": {
-    "action": "./index.html",
+    "action": "https://dl.mejv.pro/index.html",
     "method": "GET",
     "params": {
       "title": "title",
