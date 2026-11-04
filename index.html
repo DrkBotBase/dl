@@ -28,6 +28,8 @@
     
     <link rel="icon" type="image/png" href="https://mejv.pro/assets/images/icon.png">
     <link rel="apple-touch-icon" href="https://mejv.pro/assets/images/icon.png">
+    
+    <link rel="manifest" href="./manifest.json">
 
     <meta name="language" content="Spanish">
     <link rel="stylesheet" href="./styles.css">
@@ -55,127 +57,131 @@
     <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
 </head>
 <body class="text-white min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-[#aaff00] selection:text-black">
-
-    <div class="fixed inset-0 bg-glow-top-left pointer-events-none"></div>
-    <div class="fixed inset-0 bg-glow-center pointer-events-none"></div>
-    <div class="fixed inset-0 bg-glow-bottom-right pointer-events-none"></div>
-
-    <div class="max-w-md w-full mx-auto px-6 py-6 flex-1 flex flex-col justify-between relative z-10">
-
-        <main class="my-auto py-8 flex flex-col items-center w-full">
-
-            <div class="relative mb-6 mt-2 flex items-center justify-center">
-                <div class="absolute inset-0 bg-gradient-to-tr from-blue-600/30 to-[#aaff00]/30 blur-3xl rounded-full scale-125"></div>
-                <img src="./logo.png" alt="MEJV Download Logo" class="w-48 sm:w-60 object-contain relative z-10 logo-glow transition-transform duration-500 hover:scale-105">
-            </div>
-
-            <div class="w-full space-y-4">
-                <div class="glass-input rounded-full px-5 py-3.5 flex items-center space-x-3 transition-all duration-300">
-                    <i data-lucide="link" class="w-5 h-5 text-slate-400 flex-shrink-0" id="input-icon"></i>
-                    <input type="url" id="video-url" placeholder="Pega aquí el enlace..." class="w-full bg-transparent text-white placeholder-slate-400 text-sm focus:outline-none font-normal" autocomplete="off">
-                    <button id="paste-btn" class="text-xs font-bold text-[#aaff00] hover:text-white bg-[#aaff00]/10 hover:bg-[#aaff00]/20 px-3 py-1.5 rounded-full transition-colors flex items-center space-x-1">
-                        <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
-                        <span>Pegar</span>
-                    </button>
-                </div>
-
-                <div id="options-panel" class="hidden transition-all duration-500 ease-out space-y-3 p-4 bg-[#0d1424]/90 rounded-2xl border border-blue-500/30 backdrop-blur-md">
-                    <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
-                        <span class="text-xs font-medium text-slate-400">Plataforma detectada:</span>
-                        <div id="platform-badge" class="flex items-center space-x-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300">
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-2">Selecciona el formato:</label>
-                        <div id="format-container" class="grid grid-cols-2 gap-4">
-                        </div>
-                    </div>
-
-                    <div id="quality-container" class="hidden pt-2 border-t border-slate-800/60 mt-2">
-                        <label class="block text-xs font-semibold text-slate-300 mb-2">Calidad del vídeo:</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button type="button" data-quality="360p" class="quality-opt-btn py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 text-xs font-medium hover:border-[#aaff00] transition-all">360p</button>
-                            <button type="button" data-quality="480p" class="quality-opt-btn py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 text-xs font-medium hover:border-[#aaff00] transition-all">480p</button>
-                            <button type="button" data-quality="1080p" class="quality-opt-btn py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 text-xs font-medium hover:border-[#aaff00] transition-all">1080p</button>
-                        </div>
-                    </div>
-                </div>
-
-                <button id="download-btn" class="hidden w-full btn-gradient py-4 rounded-full flex items-center justify-center space-x-2.5 font-extrabold text-base tracking-wide transition-all transform active:scale-98">
-                    <i data-lucide="download" class="w-5 h-5 stroke-[2.5]"></i>
-                    <span id="download-btn-text">Descargar</span>
-                </button>
-            </div>
-
-            <div class="grid grid-cols-3 gap-6 w-full mt-10 max-w-[200px]">
-                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
-                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-red-500/50 group-hover:bg-red-500/10 transition-all duration-300 shadow-lg">
-                        <i class="fa-brands fa-youtube text-2xl text-red-500"></i>
-                    </div>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">YouTube</span>
-                </div>
-                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
-                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-green-500/50 group-hover:bg-green-500/10 transition-all duration-300 shadow-lg">
-                        <i class="fa-brands fa-spotify text-2xl text-green-500"></i>
-                    </div>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Spotify</span>
-                </div>
-                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
-                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-slate-500/20 flex items-center justify-center group-hover:border-slate-200/50 group-hover:bg-slate-200/10 transition-all duration-300 shadow-lg">
-                        <i class="fa-brands fa-tiktok text-2xl text-white-500"></i>
-                    </div>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">TikTok</span>
-                </div>
-                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
-                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-red-500/50 group-hover:bg-red-500/10 transition-all duration-300 shadow-lg">
-                        <i class="fa-brands fa-pinterest text-2xl text-red-500"></i>
-                    </div>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Pinterest</span>
-                </div>
-                <div class="flex flex-col items-center space-y-2 group cursor-pointer">
-                    <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-pink-500/50 group-hover:bg-pink-500/10 transition-all duration-300 shadow-lg">
-                        <i class="fa-brands fa-instagram text-2xl text-pink-500"></i>
-                    </div>
-                    <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Instagram</span>
-                </div>
-            </div>
-
-            <div class="w-full border-t border-slate-800/60 my-10"></div>
-            <div class="w-full">
-                <div class="grid grid-cols-3 gap-2 relative">
-                    <div class="flex flex-col items-center text-center space-y-2 relative z-10">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-[#aaff00] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-blue-900/50">1</div>
-                        <i data-lucide="link" class="w-6 h-6 text-[#aaff00] mt-1"></i>
-                        <div><h4 class="text-xs font-bold text-white leading-tight">Copia el link</h4><p class="text-[10px] text-slate-400 mt-0.5 leading-tight">de tu plataforma</p></div>
-                    </div>
-                    <div class="absolute left-[27%] top-3.5 z-0 text-blue-400/50"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
-                    <div class="flex flex-col items-center text-center space-y-2 relative z-10">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-[#aaff00] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-blue-900/50">2</div>
-                        <i data-lucide="copy" class="w-6 h-6 text-[#aaff00] mt-1"></i>
-                        <div><h4 class="text-xs font-bold text-white leading-tight">Pégalo</h4><p class="text-[10px] text-slate-400 mt-0.5 leading-tight">en el input</p></div>
-                    </div>
-                    <div class="absolute right-[27%] top-3.5 z-0 text-blue-400/50"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
-                    <div class="flex flex-col items-center text-center space-y-2 relative z-10">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-[#aaff00] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-blue-900/50">3</div>
-                        <i data-lucide="download" class="w-6 h-6 text-[#aaff00] mt-1"></i>
-                        <div><h4 class="text-xs font-bold text-white leading-tight">Descargar</h4><p class="text-[10px] text-slate-400 mt-0.5 leading-tight">y listo</p></div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-
-        <footer class="text-center py-2 text-[11px] text-slate-500 relative z-10">
-            &copy; 2026 MEJV. Todos los derechos reservados.
-        </footer>
+    <div id="maintenance-screen" class="hidden fixed inset-0 bg-[#070b14] z-[999] flex-col items-center justify-center p-6 text-center">
+        <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-lg border border-slate-700">
+            <i data-lucide="wrench" class="w-10 h-10 text-[#aaff00]"></i>
+        </div>
+        <h1 class="text-2xl font-extrabold text-white mb-2">En mantenimiento</h1>
+        <p class="text-slate-400 text-sm max-w-xs mx-auto">
+            Estamos realizando mejoras en el servicio. Volveremos a estar disponibles en unos minutos. ¡Gracias por tu paciencia!
+        </p>
     </div>
 
-    <div class="wave-bg">
-        <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-            <path d="M-5.92,82.39 C188.77,163.32 322.51,-12.33 509.31,61.67 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgba(0, 102, 255, 0.15);"></path>
-            <path d="M-8.18,48.85 C142.49,137.66 351.29,19.24 504.22,90.29 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgba(170, 255, 0, 0.1);"></path>
-        </svg>
+    <div id="app-content" class="hidden">
+      <div class="fixed inset-0 bg-glow-top-left pointer-events-none"></div>
+      <div class="fixed inset-0 bg-glow-center pointer-events-none"></div>
+      <div class="fixed inset-0 bg-glow-bottom-right pointer-events-none"></div>
+      
+      <div class="max-w-md w-full mx-auto px-6 py-6 flex-1 flex flex-col justify-between relative z-10">
+          <main class="my-auto py-8 flex flex-col items-center w-full">
+              <div class="relative mb-6 mt-2 flex items-center justify-center">
+                  <div class="absolute inset-0 bg-gradient-to-tr from-blue-600/30 to-[#aaff00]/30 blur-3xl rounded-full scale-125"></div>
+                  <img src="./logo.png" alt="MEJV Download Logo" class="w-48 sm:w-60 object-contain relative z-10 logo-glow transition-transform duration-500 hover:scale-105">
+              </div>
+              <div class="w-full space-y-4">
+                  <div class="glass-input rounded-full px-5 py-3.5 flex items-center space-x-3 transition-all duration-300">
+                      <i data-lucide="link" class="w-5 h-5 text-slate-400 flex-shrink-0" id="input-icon"></i>
+                      <input type="url" id="video-url" placeholder="Pega aquí el enlace..." class="w-full bg-transparent text-white placeholder-slate-400 text-sm focus:outline-none font-normal" autocomplete="off">
+                      <button id="paste-btn" class="text-xs font-bold text-[#aaff00] hover:text-white bg-[#aaff00]/10 hover:bg-[#aaff00]/20 px-3 py-1.5 rounded-full transition-colors flex items-center space-x-1">
+                          <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
+                          <span>Pegar</span>
+                      </button>
+                  </div>
+  
+                  <div id="options-panel" class="hidden transition-all duration-500 ease-out space-y-3 p-4 bg-[#0d1424]/90 rounded-2xl border border-blue-500/30 backdrop-blur-md">
+                      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                          <span class="text-xs font-medium text-slate-400">Plataforma detectada:</span>
+                          <div id="platform-badge" class="flex items-center space-x-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300">
+                          </div>
+                      </div>
+                      
+                      <div>
+                          <label class="block text-xs font-semibold text-slate-300 mb-2">Selecciona el formato:</label>
+                          <div id="format-container" class="grid grid-cols-2 gap-4">
+                          </div>
+                      </div>
+  
+                      <div id="quality-container" class="hidden pt-2 border-t border-slate-800/60 mt-2">
+                          <label class="block text-xs font-semibold text-slate-300 mb-2">Calidad del vídeo:</label>
+                          <div class="grid grid-cols-3 gap-2">
+                              <button type="button" data-quality="360p" class="quality-opt-btn py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 text-xs font-medium hover:border-[#aaff00] transition-all">360p</button>
+                              <button type="button" data-quality="480p" class="quality-opt-btn py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 text-xs font-medium hover:border-[#aaff00] transition-all">480p</button>
+                              <button type="button" data-quality="1080p" class="quality-opt-btn py-2 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 text-xs font-medium hover:border-[#aaff00] transition-all">1080p</button>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <button id="download-btn" class="hidden w-full btn-gradient py-4 rounded-full flex items-center justify-center space-x-2.5 font-extrabold text-base tracking-wide transition-all transform active:scale-95">
+                      <i data-lucide="download" class="w-5 h-5 stroke-[2.5]"></i>
+                      <span id="download-btn-text">Descargar</span>
+                  </button>
+              </div>
+              <div class="grid grid-cols-3 gap-6 w-full mt-10 max-w-[200px]">
+                  <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                      <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-red-500/50 group-hover:bg-red-500/10 transition-all duration-300 shadow-lg">
+                          <i class="fa-brands fa-youtube text-2xl text-red-500"></i>
+                      </div>
+                      <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">YouTube</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                      <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-green-500/50 group-hover:bg-green-500/10 transition-all duration-300 shadow-lg">
+                          <i class="fa-brands fa-spotify text-2xl text-green-500"></i>
+                      </div>
+                      <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Spotify</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                      <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-slate-500/20 flex items-center justify-center group-hover:border-slate-200/50 group-hover:bg-slate-200/10 transition-all duration-300 shadow-lg">
+                          <i class="fa-brands fa-tiktok text-2xl text-white"></i>
+                      </div>
+                      <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">TikTok</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                      <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-red-500/50 group-hover:bg-red-500/10 transition-all duration-300 shadow-lg">
+                          <i class="fa-brands fa-pinterest text-2xl text-red-500"></i>
+                      </div>
+                      <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Pinterest</span>
+                  </div>
+                  <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                      <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-pink-500/50 group-hover:bg-pink-500/10 transition-all duration-300 shadow-lg">
+                          <i class="fa-brands fa-instagram text-2xl text-pink-500"></i>
+                      </div>
+                      <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Instagram</span>
+                  </div>
+              </div>
+              <div class="w-full border-t border-slate-800/60 my-10"></div>
+              <div class="w-full">
+                  <div class="grid grid-cols-3 gap-2 relative">
+                      <div class="flex flex-col items-center text-center space-y-2 relative z-10">
+                          <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-[#aaff00] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-blue-900/50">1</div>
+                          <i data-lucide="link" class="w-6 h-6 text-[#aaff00] mt-1"></i>
+                          <div><h4 class="text-xs font-bold text-white leading-tight">Copia el link</h4><p class="text-[10px] text-slate-400 mt-0.5 leading-tight">de tu plataforma</p></div>
+                      </div>
+                      <div class="absolute left-[27%] top-3.5 z-0 text-blue-400/50"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
+                      <div class="flex flex-col items-center text-center space-y-2 relative z-10">
+                          <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-[#aaff00] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-blue-900/50">2</div>
+                          <i data-lucide="copy" class="w-6 h-6 text-[#aaff00] mt-1"></i>
+                          <div><h4 class="text-xs font-bold text-white leading-tight">Pégalo</h4><p class="text-[10px] text-slate-400 mt-0.5 leading-tight">en el input</p></div>
+                      </div>
+                      <div class="absolute right-[27%] top-3.5 z-0 text-blue-400/50"><i data-lucide="arrow-right" class="w-5 h-5"></i></div>
+                      <div class="flex flex-col items-center text-center space-y-2 relative z-10">
+                          <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-[#aaff00] flex items-center justify-center text-black font-extrabold text-sm shadow-md shadow-blue-900/50">3</div>
+                          <i data-lucide="download" class="w-6 h-6 text-[#aaff00] mt-1"></i>
+                          <div><h4 class="text-xs font-bold text-white leading-tight">Descargar</h4><p class="text-[10px] text-slate-400 mt-0.5 leading-tight">y listo</p></div>
+                      </div>
+                  </div>
+              </div>
+          </main>
+          <footer class="text-center py-2 text-[11px] text-slate-500 relative z-10">
+              &copy; 2026 MEJV. Todos los derechos reservados.
+          </footer>
+      </div>
+    
+      <div class="wave-bg">
+          <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+              <path d="M-5.92,82.39 C188.77,163.32 322.51,-12.33 509.31,61.67 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgba(0, 102, 255, 0.15);"></path>
+              <path d="M-8.18,48.85 C142.49,137.66 351.29,19.24 504.22,90.29 L500.00,150.00 L0.00,150.00 Z" style="stroke: none; fill: rgba(170, 255, 0, 0.1);"></path>
+          </svg>
+      </div>
     </div>
 
     <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-[#0d1424] text-white px-5 py-3 rounded-full shadow-2xl border border-blue-500/30 text-xs font-medium opacity-0 pointer-events-none transition-all duration-300 z-50 flex items-center space-x-2">
@@ -183,10 +189,8 @@
         <span id="toast-message">Notificación</span>
     </div>
     
-    <!-- Modal para Carrusel de Imágenes -->
     <div id="image-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div class="bg-[#0d1424] border border-blue-500/30 rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-            <!-- Header del Modal -->
             <div class="flex items-center justify-between p-4 border-b border-slate-800">
                 <h3 class="text-white font-bold text-sm flex items-center gap-2">
                     <i data-lucide="images" class="w-4 h-4 text-[#aaff00]"></i>
@@ -197,18 +201,13 @@
                 </button>
             </div>
             
-            <!-- Contenedor scrolleable de imágenes -->
             <div id="modal-images-container" class="p-4 overflow-y-auto space-y-4 flex-1 custom-scrollbar">
-                <!-- Las imágenes se inyectan aquí dinámicamente -->
             </div>
         </div>
     </div>
     
-    <!-- Modal de Bienvenida / Registro -->
     <div id="welcome-modal" class="fixed inset-0 bg-[#070b14]/95 backdrop-blur-md z-[200] hidden items-center justify-center p-6">
         <div class="bg-[#0d1424] border border-blue-500/30 rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center">
-            
-            <!-- Icono y Título -->
             <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-[#aaff00] rounded-full mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
                 <i data-lucide="bar-chart-2" class="w-8 h-8 text-black"></i>
             </div>
@@ -217,7 +216,6 @@
                 Déjanos tu número para identificar tu cuenta. Así sabremos qué funciones son las más usadas y podremos mejorar el servicio para ti.
             </p>
     
-            <!-- Input de Teléfono -->
             <div class="mb-2 text-left">
                 <input type="tel" id="welcome-phone" class="w-full bg-[#070b14] border border-slate-700 text-white rounded-xl py-3 px-4 text-sm focus:border-[#aaff00] focus:outline-none transition-colors">
             </div>
@@ -225,7 +223,6 @@
                 * No enviaremos spam ni te contactaremos sin tu permiso.
             </p>
     
-            <!-- Botones -->
             <div class="space-y-3">
                 <button id="welcome-submit-btn" class="w-full btn-gradient py-3 rounded-xl font-bold text-sm text-black transition-all active:scale-95">
                     Continuar
@@ -236,295 +233,336 @@
             </div>
         </div>
     </div>
-  <script>
-    // ─── CONFIGURACIÓN DEL MODAL DE BIENVENIDA ───
+<script>
+  function getUserId() {
+    return localStorage.getItem('mejv_user_id');
+  }
+
+  function setUserId(id) {
+    localStorage.setItem('mejv_user_id', id);
+  }
+
+  function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    const toastIcon = document.getElementById('toast-icon');
+    if (!toast || !toastMessage || !toastIcon) return;
+
+    toastMessage.textContent = message;
+
+    if (isError) {
+      toast.classList.add('border-red-500/50');
+      toastIcon.setAttribute('data-lucide', 'alert-circle');
+      toastIcon.classList.replace('text-[#aaff00]', 'text-red-400');
+    } else {
+      toast.classList.remove('border-red-500/50');
+      toastIcon.setAttribute('data-lucide', 'info');
+      toastIcon.classList.replace('text-red-400', 'text-[#aaff00]');
+    }
+
+    if (window.lucide) lucide.createIcons();
+
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+
+    setTimeout(() => {
+      toast.classList.remove('opacity-100');
+      toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 3500);
+  }
+
+  let iti = null;
+
+  function initWelcomeModal() {
     const welcomeModal = document.getElementById('welcome-modal');
     const phoneInput = document.getElementById('welcome-phone');
     const submitBtn = document.getElementById('welcome-submit-btn');
     const guestBtn = document.getElementById('welcome-guest-btn');
-    
-    let iti; // Instancia de intl-tel-input
-    
-    // Inicializar la librería de teléfonos
-    if (phoneInput) {
-        iti = window.intlTelInput(phoneInput, {
-            initialCountry: "auto",
-            geoIpLookup: function(callback) {
-                fetch("https://ipinfo.io/json")
-                    .then(res => res.json())
-                    .then(data => callback(data.country))
-                    .catch(() => callback("us"));
-            },
-            utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js",
-            preferredCountries: ["co", "mx", "us", "es"],
-            separateDialCode: true,
-        });
+
+    if (!welcomeModal || !phoneInput || !submitBtn || !guestBtn) return;
+
+    if (window.intlTelInput) {
+      iti = window.intlTelInput(phoneInput, {
+        initialCountry: 'auto',
+        geoIpLookup: function (callback) {
+          fetch('https://ipinfo.io/json')
+            .then(res => res.json())
+            .then(data => callback(data.country))
+            .catch(() => callback('us'));
+        },
+        utilsScript:
+          'https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js',
+        preferredCountries: ['co', 'mx', 'us', 'es'],
+        separateDialCode: true
+      });
     }
-    
-    // Función para obtener el ID de usuario (teléfono o "guest")
-    function getUserId() {
-        return localStorage.getItem('mejv_user_id');
+
+    if (!getUserId()) {
+      welcomeModal.classList.remove('hidden');
+      welcomeModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
     }
-    
-    // Función para guardar el ID
-    function setUserId(id) {
-        localStorage.setItem('mejv_user_id', id);
-    }
-    
-    // Abrir el modal si no hay usuario registrado
-    function checkWelcome() {
-        if (!getUserId()) {
-            welcomeModal.classList.remove('hidden');
-            welcomeModal.classList.add('flex');
-        }
-    }
-    
-    // Cerrar modal y guardar ID
+
     function closeWelcome(id) {
-        setUserId(id);
-        welcomeModal.classList.add('hidden');
-        welcomeModal.classList.remove('flex');
-        lucide.createIcons(); // Re-renderizar iconos si es necesario
+      setUserId(id);
+      welcomeModal.classList.add('hidden');
+      welcomeModal.classList.remove('flex');
+      document.body.style.overflow = '';
+      if (window.lucide) lucide.createIcons();
     }
-    
-    // Evento: Botón "Comenzar" (con teléfono)
+
     submitBtn.addEventListener('click', () => {
-        if (!iti || !iti.isValidNumber()) {
-            // Puedes usar un toast aquí en lugar de alert
-            alert('Por favor, ingresa un número de teléfono válido.');
-            return;
-        }
-        const fullNumber = iti.getNumber(); // Ej: +573001234567
-        closeWelcome(fullNumber);
+      if (!iti || !iti.isValidNumber()) {
+        showToast('Por favor, ingresa un número de teléfono válido.', true);
+        return;
+      }
+      closeWelcome(iti.getNumber());
     });
-    
-    // Evento: Botón "Invitado"
-    guestBtn.addEventListener('click', () => {
-        closeWelcome('guest');
+
+    guestBtn.addEventListener('click', () => closeWelcome('guest'));
+  }
+
+  function checkSharedLink() {
+    const params = new URLSearchParams(window.location.search);
+    const sharedUrl = params.get('url');
+    if (!sharedUrl) return;
+
+    console.log('Enlace recibido:', sharedUrl);
+
+    const input = document.getElementById('video-url');
+    if (!input) return;
+
+    input.value = sharedUrl;
+    input.dispatchEvent(new Event('input'));
+
+    if (typeof showToast === 'function') {
+      showToast('Enlace cargado automáticamente');
+    }
+  }
+
+  async function checkAccess() {
+    const appContent = document.getElementById('app-content');
+    const maintenanceScreen = document.getElementById('maintenance-screen');
+    if (!appContent || !maintenanceScreen) return;
+
+    try {
+      const res = await fetch('https://mejv.pro/api/access');
+      const data = await res.json();
+
+      if (data.status === true) {
+        appContent.classList.remove('hidden');
+        maintenanceScreen.classList.add('hidden');
+        maintenanceScreen.classList.remove('flex');
+      } else {
+        appContent.classList.add('hidden');
+        maintenanceScreen.classList.remove('hidden');
+        maintenanceScreen.classList.add('flex');
+      }
+    } catch (error) {
+      console.warn('Error verificando acceso:', error);
+      appContent.classList.add('hidden');
+      maintenanceScreen.classList.remove('hidden');
+      maintenanceScreen.classList.add('flex');
+    }
+  }
+
+  const videoUrlInput = document.getElementById('video-url');
+  const pasteBtn = document.getElementById('paste-btn');
+  const optionsPanel = document.getElementById('options-panel');
+  const platformBadge = document.getElementById('platform-badge');
+  const formatContainer = document.getElementById('format-container');
+  const qualityContainer  = document.getElementById('quality-container');
+  const downloadBtn = document.getElementById('download-btn');
+  const downloadBtnText = document.getElementById('download-btn-text');
+
+  const imageModal = document.getElementById('image-modal');
+  const closeModalBtn = document.getElementById('close-modal-btn');
+  const modalImagesContainer = document.getElementById('modal-images-container');
+  const modalImageCount = document.getElementById('modal-image-count');
+
+  let currentPlatform = null;
+  let selectedFormat = null;
+  let selectedQuality = '360p';
+  let currentUrl = '';
+
+  function detectPlatform(url) {
+    const cleanUrl = url.trim().toLowerCase();
+    if (!cleanUrl) return null;
+    if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) return 'youtube';
+    if (cleanUrl.includes('spotify.com')) return 'spotify';
+    if (cleanUrl.includes('tiktok.com')) return 'tiktok';
+    if (cleanUrl.includes('pinterest.com') || cleanUrl.includes('pin.it')) return 'pinterest';
+    if (cleanUrl.includes('instagram.com')) return 'instagram';
+    return null;
+  }
+
+  function renderFormatOptions(platform) {
+    currentPlatform = platform;
+    selectedFormat = null;
+    downloadBtn.classList.add('hidden');
+    qualityContainer.classList.add('hidden');
+
+    if (platform === 'youtube') {
+      platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30';
+      platformBadge.innerHTML = `<i class="fa-brands fa-youtube text-sm"></i> <span>YouTube</span>`;
+    } else if (platform === 'spotify') {
+      platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30';
+      platformBadge.innerHTML = `<i class="fa-brands fa-spotify text-sm"></i> <span>Spotify</span>`;
+    } else if (platform === 'tiktok') {
+      platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-slate-200/20 text-white border border-slate-200/30';
+      platformBadge.innerHTML = `<i class="fa-brands fa-tiktok text-sm"></i> <span>TikTok</span>`;
+    } else if (platform === 'pinterest') {
+      platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-400/30';
+      platformBadge.innerHTML = `<i class="fa-brands fa-pinterest text-sm"></i> <span>Pinterest</span>`;
+    } else if (platform === 'instagram') {
+      platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30';
+      platformBadge.innerHTML = `<i class="fa-brands fa-instagram text-sm"></i> <span>Instagram</span>`;
+    }
+
+    formatContainer.innerHTML = '';
+
+    if (platform === 'youtube') {
+      formatContainer.className = 'grid grid-cols-2 gap-3';
+
+      const ytaBtn = document.createElement('button');
+      ytaBtn.type = 'button';
+      ytaBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all';
+      ytaBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-blue-400"></i><span>Audio</span>`;
+      ytaBtn.onclick = () => selectFormat('audio', ytaBtn);
+
+      const ytvBtn = document.createElement('button');
+      ytvBtn.type = 'button';
+      ytvBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all';
+      ytvBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-[#aaff00]"></i><span>Vídeo</span>`;
+      ytvBtn.onclick = () => selectFormat('video', ytvBtn);
+
+      formatContainer.appendChild(ytaBtn);
+      formatContainer.appendChild(ytvBtn);
+
+    } else if (platform === 'spotify') {
+      formatContainer.className = 'grid grid-cols-1 gap-3';
+      const spBtn = document.createElement('button');
+      spBtn.type = 'button';
+      spBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-green-500/80 bg-green-600/20 text-green-400 font-medium text-xs transition-all shadow-sm shadow-green-500/30';
+      spBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-green-400"></i><span>Audio</span>`;
+      formatContainer.appendChild(spBtn);
+      selectFormat('audio', spBtn);
+
+    } else if (platform === 'tiktok') {
+      formatContainer.className = 'grid grid-cols-1 gap-3';
+      const ttBtn = document.createElement('button');
+      ttBtn.type = 'button';
+      ttBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-200/80 bg-slate-200/10 text-white font-medium text-xs transition-all shadow-sm';
+      ttBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-red-400"></i><span>Vídeo / Carrusel</span>`;
+      formatContainer.appendChild(ttBtn);
+      selectFormat('video', ttBtn);
+
+    } else if (platform === 'pinterest') {
+      formatContainer.className = 'grid grid-cols-1 gap-3';
+      const pinBtn = document.createElement('button');
+      pinBtn.type = 'button';
+      pinBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-red-400/80 bg-red-400/10 text-red-400 font-medium text-xs transition-all shadow-sm';
+      pinBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-red-400"></i><span>Vídeo / Carrusel</span>`;
+      formatContainer.appendChild(pinBtn);
+      selectFormat('image', pinBtn);
+
+    } else if (platform === 'instagram') {
+      formatContainer.className = 'grid grid-cols-1 gap-3';
+      const inBtn = document.createElement('button');
+      inBtn.type = 'button';
+      inBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-pink-200/80 bg-pink-400/10 text-pink-400 font-medium text-xs transition-all shadow-sm';
+      inBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-pink-400"></i><span>Vídeo / Carrusel</span>`;
+      formatContainer.appendChild(inBtn);
+      selectFormat('image', inBtn);
+    }
+
+    optionsPanel.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function selectFormat(format, clickedBtn) {
+    selectedFormat = format;
+
+    const allOptBtns = formatContainer.querySelectorAll('.format-opt-btn');
+    allOptBtns.forEach(btn => {
+      btn.classList.remove('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-white', 'shadow-md', 'shadow-[#aaff00]/20');
+      btn.classList.add('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
     });
-    
-    // Verificar al cargar la página
-    document.addEventListener('DOMContentLoaded', checkWelcome);
-  </script>
-  <script>
-    lucide.createIcons();
 
-    const videoUrlInput = document.getElementById('video-url');
-    const pasteBtn = document.getElementById('paste-btn');
-    const optionsPanel = document.getElementById('options-panel');
-    const platformBadge = document.getElementById('platform-badge');
-    const formatContainer = document.getElementById('format-container');
-    const qualityContainer = document.getElementById('quality-container');
-    const downloadBtn = document.getElementById('download-btn');
-    const downloadBtnText = document.getElementById('download-btn-text');
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toast-message');
-    const toastIcon = document.getElementById('toast-icon');
-
-    const imageModal = document.getElementById('image-modal');
-    const closeModalBtn = document.getElementById('close-modal-btn');
-    const modalImagesContainer = document.getElementById('modal-images-container');
-    const modalImageCount = document.getElementById('modal-image-count');
-
-    let currentPlatform = null; 
-    let selectedFormat = null; 
-    let selectedQuality = '360p';
-    let currentUrl = "";
-
-    function showToast(message, isError = false) {
-        toastMessage.textContent = message;
-        if (isError) {
-            toast.classList.add('border-red-500/50');
-            toastIcon.setAttribute('data-lucide', 'alert-circle');
-            toastIcon.classList.replace('text-[#aaff00]', 'text-red-400');
-        } else {
-            toast.classList.remove('border-red-500/50');
-            toastIcon.setAttribute('data-lucide', 'info');
-            toastIcon.classList.replace('text-red-400', 'text-[#aaff00]');
-        }
-        lucide.createIcons();
-        toast.classList.remove('opacity-0', 'pointer-events-none');
-        toast.classList.add('opacity-100');
-        setTimeout(() => {
-            toast.classList.remove('opacity-100');
-            toast.classList.add('opacity-0', 'pointer-events-none');
-        }, 3500);
-    }
-    
-    // 1: Detectar url
-    function detectPlatform(url) {
-        const cleanUrl = url.trim().toLowerCase();
-        if (!cleanUrl) return null;
-        if (cleanUrl.includes('youtube.com') || cleanUrl.includes('youtu.be')) return 'youtube';
-        if (cleanUrl.includes('spotify.com')) return 'spotify';
-        if (cleanUrl.includes('tiktok.com')) return 'tiktok';
-        if (cleanUrl.includes('pinterest.com') || cleanUrl.includes('pin.it')) return 'pinterest';
-        if (cleanUrl.includes('instagram.com')) return 'instagram';
-        return null;
-    }
-    
-    // 2: Renderizar
-    function renderFormatOptions(platform) {
-        currentPlatform = platform;
-        selectedFormat = null;
-        downloadBtn.classList.add('hidden');
-        qualityContainer.classList.add('hidden');
-
-        if (platform === 'youtube') {
-            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-500/30";
-            platformBadge.innerHTML = `<i class="fa-brands fa-youtube text-sm"></i> <span>YouTube</span>`;
-        } else if (platform === 'spotify') {
-            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-green-500/20 text-green-400 border border-green-500/30";
-            platformBadge.innerHTML = `<i class="fa-brands fa-spotify text-sm"></i> <span>Spotify</span>`;
-        } else if (platform === 'tiktok') {
-            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-slate-200/20 text-white border border-slate-200/30";
-            platformBadge.innerHTML = `<i class="fa-brands fa-tiktok text-sm"></i> <span>TikTok</span>`;
-        } else if (platform === 'pinterest') {
-            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-red-500/20 text-red-400 border border-red-400/30";
-            platformBadge.innerHTML = `<i class="fa-brands fa-pinterest text-sm"></i> <span>Pinterest</span>`;
-        } else if (platform === 'instagram') {
-            platformBadge.className = "flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30";
-            platformBadge.innerHTML = `<i class="fa-brands fa-instagram text-sm"></i> <span>Instagram</span>`;
-        }
-
-        formatContainer.innerHTML = '';
-
-        if (platform === 'youtube') {
-            formatContainer.className = "grid grid-cols-2 gap-3";
-            
-            const ytaBtn = document.createElement('button');
-            ytaBtn.type = 'button';
-            ytaBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all";
-            ytaBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-blue-400"></i><span>Audio</span>`;
-            ytaBtn.onclick = () => selectFormat('audio', ytaBtn);
-
-            const ytvBtn = document.createElement('button');
-            ytvBtn.type = 'button';
-            ytvBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-300 font-medium text-xs hover:border-[#aaff00] hover:text-white transition-all";
-            ytvBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-[#aaff00]"></i><span>Vídeo</span>`;
-            ytvBtn.onclick = () => selectFormat('video', ytvBtn);
-
-            formatContainer.appendChild(ytaBtn);
-            formatContainer.appendChild(ytvBtn);
-        } else if (platform === 'spotify') {
-            formatContainer.className = "grid grid-cols-1 gap-3";
-            const spBtn = document.createElement('button');
-            spBtn.type = 'button';
-            spBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-green-500/80 bg-green-600/20 text-green-400 font-medium text-xs transition-all shadow-sm shadow-green-500/30";
-            spBtn.innerHTML = `<i data-lucide="music" class="w-4 h-4 text-green-400"></i><span>Audio</span>`;
-            formatContainer.appendChild(spBtn);
-            selectFormat('audio', spBtn);
-        } else if (platform === 'tiktok') {
-            formatContainer.className = "grid grid-cols-1 gap-3";
-            const ttBtn = document.createElement('button');
-            ttBtn.type = 'button';
-            ttBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-200/80 bg-slate-200/10 text-white font-medium text-xs transition-all shadow-sm";
-            ttBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-red-400"></i><span>Vídeo / Carrusel</span>`;
-            formatContainer.appendChild(ttBtn);
-            selectFormat('video', ttBtn);
-        } else if (platform === 'pinterest') {
-            formatContainer.className = "grid grid-cols-1 gap-3";
-            const pinBtn = document.createElement('button');
-            pinBtn.type = 'button';
-            pinBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-red-400/80 bg-red-400/10 text-red-400 font-medium text-xs transition-all shadow-sm";
-            pinBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-red-400"></i><span>Vídeo / Carrusel</span>`;
-            formatContainer.appendChild(pinBtn);
-            selectFormat('image', pinBtn);
-        } else if (platform === 'instagram') {
-            formatContainer.className = "grid grid-cols-1 gap-3";
-            const inBtn = document.createElement('button');
-            inBtn.type = 'button';
-            inBtn.className = "format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-pink-200/80 bg-pink-400/10 text-pink-400 font-medium text-xs transition-all shadow-sm";
-            inBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-pink-400"></i><span>Vídeo / Carrusel</span>`;
-            formatContainer.appendChild(inBtn);
-            selectFormat('image', inBtn);
-        }
-
-        optionsPanel.classList.remove('hidden');
-        lucide.createIcons();
+    if (clickedBtn) {
+      clickedBtn.classList.remove('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
+      clickedBtn.classList.add('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-white', 'shadow-md', 'shadow-[#aaff00]/20');
     }
 
-    function selectFormat(format, clickedBtn) {
-        selectedFormat = format;
-        const allOptBtns = formatContainer.querySelectorAll('.format-opt-btn');
-        allOptBtns.forEach(btn => {
-            btn.classList.remove('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-white', 'shadow-md', 'shadow-[#aaff00]/20');
-            btn.classList.add('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
-        });
-        if (clickedBtn) {
-            clickedBtn.classList.remove('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
-            clickedBtn.classList.add('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-white', 'shadow-md', 'shadow-[#aaff00]/20');
-        }
-
-        if (currentPlatform === 'youtube' && format === 'video') {
-            qualityContainer.classList.remove('hidden');
-            selectedQuality = '360p';
-            updateQualityUI();
-        } else {
-            qualityContainer.classList.add('hidden');
-        }
-
-        downloadBtnText.textContent = 'Descargar';
-        downloadBtn.classList.remove('hidden');
+    if (currentPlatform === 'youtube' && format === 'video') {
+      qualityContainer.classList.remove('hidden');
+      selectedQuality = '360p';
+      updateQualityUI();
+    } else {
+      qualityContainer.classList.add('hidden');
     }
 
-    const qualityBtns = document.querySelectorAll('.quality-opt-btn');
-    
-    function updateQualityUI() {
-        qualityBtns.forEach(btn => {
-            if (btn.getAttribute('data-quality') === selectedQuality) {
-                btn.classList.remove('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
-                btn.classList.add('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-[#aaff00]');
-            } else {
-                btn.classList.remove('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-[#aaff00]');
-                btn.classList.add('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
-            }
-        });
-    }
+    downloadBtnText.textContent = 'Descargar';
+    downloadBtn.classList.remove('hidden');
+  }
 
+  const qualityBtns = document.querySelectorAll('.quality-opt-btn');
+
+  function updateQualityUI() {
     qualityBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            selectedQuality = btn.getAttribute('data-quality');
-            updateQualityUI();
-        });
+      if (btn.getAttribute('data-quality') === selectedQuality) {
+        btn.classList.remove('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
+        btn.classList.add('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-[#aaff00]');
+      } else {
+        btn.classList.remove('border-[#aaff00]', 'bg-[#aaff00]/10', 'text-[#aaff00]');
+        btn.classList.add('border-slate-700', 'bg-slate-800/80', 'text-slate-300');
+      }
     });
+  }
 
-    function openModal() {
-        imageModal.classList.remove('hidden');
-        imageModal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
+  qualityBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedQuality = btn.getAttribute('data-quality');
+      updateQualityUI();
+    });
+  });
 
-    function closeModal() {
-        imageModal.classList.add('hidden');
-        imageModal.classList.remove('flex');
-        document.body.style.overflow = '';
-    }
-    
-    closeModalBtn.addEventListener('click', closeModal);
+  function openModal() {
+    imageModal.classList.remove('hidden');
+    imageModal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
 
+  function closeModal() {
+    imageModal.classList.add('hidden');
+    imageModal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
 
-    function downloadSingleImage(imgUrl, index) {
-        showToast(`Descargando imagen ${index + 1}...`, false);
-        const a = document.createElement('a');
-        a.href = imgUrl;
-        a.setAttribute('download', `tiktok_img_${index + 1}.jpg`);
-        a.setAttribute('target', '_blank');
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
 
+  function downloadSingleImage(imgUrl, index) {
+    showToast(`Descargando imagen ${index + 1}...`, false);
+    const a = document.createElement('a');
+    a.href = imgUrl;
+    a.setAttribute('download', `tiktok_img_${index + 1}.jpg`);
+    a.setAttribute('target', '_blank');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  if (videoUrlInput) {
     videoUrlInput.addEventListener('input', (e) => {
       const url = e.target.value;
       currentUrl = url;
       const platform = detectPlatform(url);
-      
+
       if (!imageModal.classList.contains('hidden')) {
         closeModal();
         modalImagesContainer.innerHTML = '';
       }
-      
+
       if (platform) {
         renderFormatOptions(platform);
       } else {
@@ -532,100 +570,112 @@
         downloadBtn.classList.add('hidden');
       }
     });
+  }
 
-    if (pasteBtn) {
-        pasteBtn.addEventListener('click', async () => {
-            try {
-                const text = await navigator.clipboard.readText();
-                videoUrlInput.value = text;
-                videoUrlInput.dispatchEvent(new Event('input'));
-                showToast('¡Enlace pegado!');
-            } catch (err) {
-                showToast('Por favor, pega el enlace manualmente.', true);
-            }
-        });
-    }
-
-    downloadBtn.addEventListener('click', async () => {
-        if (!selectedFormat || !currentPlatform || !currentUrl) return;
-        
-        const originalHtml = downloadBtn.innerHTML;
-        downloadBtn.disabled = true;
-        downloadBtn.classList.add('opacity-80', 'cursor-not-allowed');
-        downloadBtn.innerHTML = `
-            <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>Conectando...</span>
-        `;
-        
-        try {
-            const userId = getUserId() || 'guest';
-            
-            fetch(`https://mejv.pro/api/track-usage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                  userId: userId,
-                  platform: currentPlatform
-                }),
-                keepalive: true
-            }).catch(err => console.warn('No se pudo registrar el uso:', err));
-            
-            let fetchUrl = `https://mejv.pro/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
-            if (currentPlatform === 'youtube' && selectedFormat === 'video') {
-                fetchUrl += `&quality=${selectedQuality}`;
-            }
-  
-            const response = await fetch(fetchUrl);
-            const data = await response.json();
-  
-            if (!response.ok || !data.status) {
-                throw new Error(data.error || 'Error al procesar el enlace.');
-            }
-  
-            if (data.type === 'images' && data.data.images && data.data.images.length > 0) {
-                showToast(`¡Se encontraron ${data.data.images.length} imágenes!`, false);
-                
-                modalImagesContainer.innerHTML = '';
-                modalImageCount.textContent = data.data.images.length;
-
-                data.data.images.forEach((imgUrl, index) => {
-                    const card = document.createElement('div');
-                    card.className = "bg-slate-800/50 border border-slate-700/50 rounded-xl p-2 flex flex-col gap-2";
-                    card.innerHTML = `
-                        <img src="${imgUrl}" alt="Imagen ${index + 1}" class="w-full h-48 object-cover rounded-lg bg-slate-900" loading="lazy">
-                        <button class="w-full bg-[#0066ff] hover:bg-blue-600 text-white font-bold text-xs py-2 rounded-lg transition-colors flex items-center justify-center gap-2">
-                            <i data-lucide="download" class="w-4 h-4"></i> Descargar Imagen ${index + 1}
-                        </button>
-                    `;
-                    
-                    const btn = card.querySelector('button');
-                    btn.onclick = () => downloadSingleImage(imgUrl, index);
-
-                    modalImagesContainer.appendChild(card);
-                });
-
-                openModal();
-                lucide.createIcons();
-
-            } else {
-                showToast(`¡Descarga iniciada!`, false);
-                window.location.href = data.data.url;
-            }
-
-        } catch (error) {
-            showToast(error.message, true);
-        } finally {
-            setTimeout(() => {
-                downloadBtn.disabled = false;
-                downloadBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-                downloadBtn.innerHTML = originalHtml;
-                lucide.createIcons();
-            }, 1500);
-        }
+  if (pasteBtn) {
+    pasteBtn.addEventListener('click', async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        videoUrlInput.value = text;
+        videoUrlInput.dispatchEvent(new Event('input'));
+        showToast('¡Enlace pegado!');
+      } catch (err) {
+        showToast('Por favor, pega el enlace manualmente.', true);
+      }
     });
-  </script>
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', async () => {
+      if (!selectedFormat || !currentPlatform || !currentUrl) return;
+
+      const originalHtml = downloadBtn.innerHTML;
+      downloadBtn.disabled = true;
+      downloadBtn.classList.add('opacity-80', 'cursor-not-allowed');
+      downloadBtn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Conectando...</span>
+      `;
+
+      try {
+        const userId = getUserId() || 'guest';
+
+        fetch('https://mejv.pro/api/track-usage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, platform: currentPlatform }),
+          keepalive: true
+        }).catch(err => console.warn('No se pudo registrar el uso:', err));
+
+        let fetchUrl = `https://mejv.pro/api/resolve?url=${encodeURIComponent(currentUrl)}&type=${selectedFormat}&platform=${currentPlatform}`;
+        if (currentPlatform === 'youtube' && selectedFormat === 'video') {
+          fetchUrl += `&quality=${selectedQuality}`;
+        }
+
+        const response = await fetch(fetchUrl);
+        const data = await response.json();
+
+        if (!response.ok || !data.status) {
+          throw new Error(data.error || 'Error al procesar el enlace.');
+        }
+
+        if (data.type === 'images' && data.data.images && data.data.images.length > 0) {
+          showToast(`¡Se encontraron ${data.data.images.length} imágenes!`, false);
+
+          modalImagesContainer.innerHTML = '';
+          modalImageCount.textContent = data.data.images.length;
+
+          data.data.images.forEach((imgUrl, index) => {
+            const card = document.createElement('div');
+            card.className = 'bg-slate-800/50 border border-slate-700/50 rounded-xl p-2 flex flex-col gap-2';
+            card.innerHTML = `
+              <img src="${imgUrl}" alt="Imagen ${index + 1}" class="w-full h-48 object-cover rounded-lg bg-slate-900" loading="lazy">
+              <button class="w-full bg-[#0066ff] hover:bg-blue-600 text-white font-bold text-xs py-2 rounded-lg transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="download" class="w-4 h-4"></i> Descargar Imagen ${index + 1}
+              </button>
+            `;
+            const btn = card.querySelector('button');
+            btn.onclick = () => downloadSingleImage(imgUrl, index);
+            modalImagesContainer.appendChild(card);
+          });
+
+          openModal();
+          if (window.lucide) lucide.createIcons();
+
+        } else {
+          showToast('¡Descarga iniciada!', false);
+          window.location.href = data.data.url;
+        }
+
+      } catch (error) {
+        showToast(error.message, true);
+      } finally {
+        setTimeout(() => {
+          downloadBtn.disabled = false;
+          downloadBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+          downloadBtn.innerHTML = originalHtml;
+          if (window.lucide) lucide.createIcons();
+        }, 1500);
+      }
+    });
+  }
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('SW On'))
+      .catch(err => console.error('Error SW:', err));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) lucide.createIcons();
+
+    initWelcomeModal();
+    checkSharedLink();
+    checkAccess();
+  });
+</script>
 </body>
 </html>
