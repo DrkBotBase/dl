@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mejv-pwa-v3';
+const CACHE_NAME = 'mejv-pwa-v4';
 const APP_SHELL = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const APP_SHELL = [
   './manifest.json',
   './192.png',
   './512.png',
-  './logo.png'
+  './logo.png',
+  './legal/index.html'
 ];
 
 self.addEventListener('install', (event) => {
@@ -17,24 +18,53 @@ self.addEventListener('install', (event) => {
   );
 });
 
-self.addEventListener('activate', (e) => {
-  e.waitUntil(clients.claim());
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((cacheNames) => Promise.all(
+        cacheNames
+          .filter((cacheName) => cacheName.startsWith('mejv-pwa-') && cacheName !== CACHE_NAME)
+          .map((cacheName) => caches.delete(cacheName))
+      ))
+      .then(() => clients.claim())
+  );
 });
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
+    (async () => {
+      const requestUrl = new URL(event.request.url);
+      const isSameOrigin = requestUrl.origin === self.location.origin;
 
-      return fetch(event.request).then((networkResponse) => {
-        if (new URL(event.request.url).origin === self.location.origin) {
+      try {
+        // La red siempre tiene prioridad. no-store evita que el navegador
+        // entregue una respuesta antigua desde su propia caché HTTP.
+        const networkResponse = await fetch(
+          event.request,
+          isSameOrigin ? { cache: 'no-store' } : undefined
+        );
+
+        if (isSameOrigin && networkResponse.ok) {
           const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache));
+          event.waitUntil(
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseToCache))
+          );
         }
+
         return networkResponse;
-      });
-    })
+      } catch (error) {
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) return cachedResponse;
+
+        if (event.request.mode === 'navigate') {
+          const offlinePage = await caches.match('./index.html');
+          if (offlinePage) return offlinePage;
+        }
+
+        throw error;
+      }
+    })()
   );
 });

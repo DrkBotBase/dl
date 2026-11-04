@@ -771,7 +771,8 @@
   });
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
+      .then((registration) => registration.update())
       .then(() => console.log('SW On'))
       .catch(err => console.error('Error SW:', err));
   }
