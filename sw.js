@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mejv-pwa-v1';
+const CACHE_NAME = 'mejv-pwa-v2';
 const APP_SHELL = [
   './',
   './index.html',
