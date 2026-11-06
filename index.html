@@ -910,11 +910,20 @@
       return;
     }
 
-    // El endpoint documentado recibe MP3. MediaRecorder suele generar WebM/Ogg,
-    // por lo que no se envía otro formato silenciosamente.
-    const mimeType = ['audio/mpeg'].find((type) => MediaRecorder.isTypeSupported(type));
+    const supportedMimeTypes = [
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/ogg;codecs=opus',
+      'audio/ogg',
+      'audio/mp4',
+      'audio/mpeg'
+    ];
+    const canCheckMime = typeof MediaRecorder.isTypeSupported === 'function';
+    const mimeType = supportedMimeTypes.find((type) =>
+      canCheckMime ? MediaRecorder.isTypeSupported(type) : type === 'audio/webm'
+    );
     if (!mimeType) {
-      showToast('Este navegador no puede generar MP3 desde el micrófono. Usa la pestaña URL.', true);
+      showToast('Este navegador no permite grabar un formato compatible. Usa la pestaña URL.', true);
       return;
     }
 
@@ -924,6 +933,7 @@
       cancelRecording = false;
       audioChunks = [];
       mediaRecorder = new MediaRecorder(stream, { mimeType });
+      const actualMimeType = mediaRecorder.mimeType || mimeType;
       isRecording = true;
       recordBtn.classList.add('animate-pulse');
       recordBtn.disabled = true;
@@ -945,7 +955,7 @@
         recordingTimer = null;
         if (cancelRecording) return;
 
-        const audioBlob = new Blob(audioChunks, { type: mimeType });
+        const audioBlob = new Blob(audioChunks, { type: actualMimeType });
         if (!audioBlob.size) {
           showToast('No se pudo obtener audio de la grabación.', true);
           resetAudioModal();
@@ -955,7 +965,16 @@
         recordStatus.textContent = 'Analizando...';
         recordStatus.classList.replace('text-[#aaff00]', 'text-blue-400');
         try {
-          await requestMusicRecognition(null, audioBlob, 'grabacion.mp3');
+          const extension = actualMimeType.includes('webm')
+            ? 'webm'
+            : actualMimeType.includes('ogg')
+              ? 'ogg'
+              : actualMimeType.includes('mp4')
+                ? 'mp4'
+                : actualMimeType.includes('mpeg')
+                  ? 'mp3'
+                  : 'audio';
+          await requestMusicRecognition(null, audioBlob, `grabacion.${extension}`);
         } catch (error) {
           showToast(error.message || 'No se pudo reconocer la canción.', true);
           resetAudioModal();
