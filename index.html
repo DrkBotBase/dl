@@ -56,8 +56,6 @@
         #install-banner.install-banner-visible { animation: install-banner-in 0.3s ease-out both; }
         @keyframes install-banner-in { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
     </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/css/intlTelInput.css">
-    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/intlTelInput.min.js"></script>
 </head>
 <body class="text-white min-h-screen flex flex-col justify-between relative overflow-x-hidden selection:bg-[#aaff00] selection:text-black">
     <div id="maintenance-screen" class="hidden fixed inset-0 bg-[#070b14] z-[999] flex-col items-center justify-center p-6 text-center">
@@ -238,37 +236,36 @@
     <div id="welcome-modal" class="fixed inset-0 bg-[#070b14]/95 backdrop-blur-md z-[200] hidden items-center justify-center p-6">
         <div class="bg-[#0d1424] border border-blue-500/30 rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center">
             <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-[#aaff00] rounded-full mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
-                <i data-lucide="bar-chart-2" class="w-8 h-8 text-black"></i>
+                <i data-lucide="download-cloud" class="w-8 h-8 text-black"></i>
             </div>
-            <h2 class="text-white font-extrabold text-xl mb-1">Ayúdanos a mejorar</h2>
-            <p class="text-slate-400 text-xs mb-6 leading-relaxed">
-                Déjanos tu número para identificar tu cuenta. Así sabremos qué funciones son las más usadas y podremos mejorar el servicio para ti.
+            <h2 class="text-white font-extrabold text-xl mb-2">Bienvenido a MEJV Download</h2>
+            <p class="text-slate-400 text-xs mb-5 leading-relaxed">
+                Pega enlaces de YouTube, Spotify, TikTok, Pinterest o Instagram para procesar y descargar contenido multimedia desde un solo lugar. La plataforma funciona sin crear cuentas ni solicitar números telefónicos.
             </p>
-    
-            <div class="mb-2 text-left">
-                <input type="tel" id="welcome-phone" class="w-full bg-[#070b14] border border-slate-700 text-white rounded-xl py-3 px-4 text-sm focus:border-[#aaff00] focus:outline-none transition-colors">
-            </div>
-            <p class="text-[10px] text-slate-500 text-left mb-5 px-1">
-                * No enviaremos spam ni te contactaremos sin tu permiso.
-            </p>
-    
+            <label for="terms-checkbox" class="flex items-start gap-3 text-left mb-5 cursor-pointer">
+                <input id="terms-checkbox" type="checkbox" class="mt-0.5 h-4 w-4 accent-[#aaff00] flex-shrink-0">
+                <span class="text-xs text-slate-300 leading-relaxed">Acepto los <a href="./legal/" target="_blank" rel="noopener" class="text-[#aaff00] hover:underline">Términos y condiciones</a> y entiendo el funcionamiento de la plataforma.</span>
+            </label>
             <div class="space-y-3">
-                <button id="welcome-submit-btn" class="w-full btn-gradient py-3 rounded-xl font-bold text-sm text-black transition-all active:scale-95">
-                    Continuar
-                </button>
-                <button id="welcome-guest-btn" class="w-full bg-slate-800/50 hover:bg-slate-800 text-slate-400 hover:text-white text-xs font-medium py-2.5 rounded-xl transition-colors">
-                    Entrar como invitado
+                <button id="welcome-submit-btn" disabled class="w-full btn-gradient py-3 rounded-xl font-bold text-sm text-black transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
+                    Aceptar y continuar
                 </button>
             </div>
         </div>
     </div>
 <script>
+  const TERMS_ACCEPTED_KEY = 'mejv_terms_accepted_v1';
+
   function getUserId() {
     return localStorage.getItem('mejv_user_id');
   }
 
   function setUserId(id) {
     localStorage.setItem('mejv_user_id', id);
+  }
+
+  function hasAcceptedTerms() {
+    return localStorage.getItem(TERMS_ACCEPTED_KEY) === 'true';
   }
 
   function showToast(message, isError = false) {
@@ -300,55 +297,36 @@
     }, 3500);
   }
 
-  let iti = null;
-
   function initWelcomeModal() {
     const welcomeModal = document.getElementById('welcome-modal');
-    const phoneInput = document.getElementById('welcome-phone');
     const submitBtn = document.getElementById('welcome-submit-btn');
-    const guestBtn = document.getElementById('welcome-guest-btn');
+    const termsCheckbox = document.getElementById('terms-checkbox');
 
-    if (!welcomeModal || !phoneInput || !submitBtn || !guestBtn) return;
+    if (!welcomeModal || !submitBtn || !termsCheckbox) return;
 
-    if (window.intlTelInput) {
-      iti = window.intlTelInput(phoneInput, {
-        initialCountry: 'auto',
-        geoIpLookup: function (callback) {
-          fetch('https://ipinfo.io/json')
-            .then(res => res.json())
-            .then(data => callback(data.country))
-            .catch(() => callback('us'));
-        },
-        utilsScript:
-          'https://cdn.jsdelivr.net/npm/intl-tel-input@23.8.1/build/js/utils.js',
-        preferredCountries: ['co', 'mx', 'us', 'es'],
-        separateDialCode: true
-      });
-    }
-
-    if (!getUserId()) {
+    if (!hasAcceptedTerms()) {
       welcomeModal.classList.remove('hidden');
       welcomeModal.classList.add('flex');
       document.body.style.overflow = 'hidden';
     }
 
-    function closeWelcome(id) {
-      setUserId(id);
+    termsCheckbox.addEventListener('change', () => {
+      submitBtn.disabled = !termsCheckbox.checked;
+    });
+
+    function closeWelcome() {
+      localStorage.setItem(TERMS_ACCEPTED_KEY, 'true');
+      setUserId('guest');
       welcomeModal.classList.add('hidden');
       welcomeModal.classList.remove('flex');
       document.body.style.overflow = '';
       if (window.lucide) lucide.createIcons();
+      maybeShowInstallBanner();
     }
 
     submitBtn.addEventListener('click', () => {
-      if (!iti || !iti.isValidNumber()) {
-        showToast('Por favor, ingresa un número de teléfono válido.', true);
-        return;
-      }
-      closeWelcome(iti.getNumber());
+      if (termsCheckbox.checked) closeWelcome();
     });
-
-    guestBtn.addEventListener('click', () => closeWelcome('guest'));
   }
 
   function checkSharedLink() {
@@ -386,6 +364,7 @@
         appContent.classList.remove('hidden');
         maintenanceScreen.classList.add('hidden');
         maintenanceScreen.classList.remove('flex');
+        maybeShowInstallBanner();
       } else {
         appContent.classList.add('hidden');
         maintenanceScreen.classList.remove('hidden');
@@ -720,7 +699,8 @@
   }
 
   function showInstallBanner({ ios = false } = {}) {
-    if (!installBanner || isStandalone() || wasDismissedRecently()) return;
+    const appContent = document.getElementById('app-content');
+    if (!installBanner || !hasAcceptedTerms() || !appContent || appContent.classList.contains('hidden') || isStandalone() || wasDismissedRecently()) return;
 
     if (ios) {
       installTitle.textContent = 'Añade MEJV a tu inicio';
@@ -731,6 +711,14 @@
     installBanner.classList.remove('hidden');
     installBanner.classList.add('install-banner-visible');
     if (window.lucide) lucide.createIcons();
+  }
+
+  function maybeShowInstallBanner() {
+    if (isIOS()) {
+      showInstallBanner({ ios: true });
+    } else if (deferredInstallPrompt) {
+      showInstallBanner();
+    }
   }
 
   function hideInstallBanner(remember = false) {
@@ -764,10 +752,6 @@
   window.addEventListener('appinstalled', () => {
     deferredInstallPrompt = null;
     hideInstallBanner();
-  });
-
-  document.addEventListener('DOMContentLoaded', () => {
-    if (isIOS() && !isStandalone()) showInstallBanner({ ios: true });
   });
 
   if ('serviceWorker' in navigator) {
