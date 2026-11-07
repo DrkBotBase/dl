@@ -83,8 +83,8 @@
                   <div class="glass-input rounded-full px-5 py-3.5 flex items-center space-x-3 transition-all duration-300">
                       <i data-lucide="link" class="w-5 h-5 text-slate-400 flex-shrink-0" id="input-icon"></i>
                       <input type="url" id="video-url" placeholder="Pega aquí el enlace..." class="w-full bg-transparent text-white placeholder-slate-400 text-sm focus:outline-none font-normal" autocomplete="off">
-                      <button id="mic-btn" type="button" class="text-xs font-bold text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-700 px-3 py-1.5 rounded-full transition-colors flex items-center space-x-1" aria-label="Reconocer música" title="Reconocer música">
-                          <i data-lucide="mic" class="w-3.5 h-3.5"></i>
+                      <button id="mic-btn" type="button" class="text-xs font-bold text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-700 px-3 py-1.5 rounded-full transition-colors flex items-center space-x-1" aria-label="Reconocer música por URL" title="Reconocer música por URL">
+                          <i data-lucide="music-2" class="w-3.5 h-3.5"></i>
                       </button>
                       <button id="paste-btn" type="button" class="text-xs font-bold text-[#aaff00] hover:text-white bg-[#aaff00]/10 hover:bg-[#aaff00]/20 px-3 py-1.5 rounded-full transition-colors flex items-center space-x-1">
                           <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
@@ -212,28 +212,9 @@
                 <p class="text-slate-400 text-xs mt-1">Identifica una canción en segundos.</p>
             </div>
 
-            <div id="audio-tabs" class="flex p-1 bg-[#070b14] rounded-xl mb-6">
-                <button id="tab-record" type="button" class="flex-1 py-2 text-xs font-bold rounded-lg bg-[#1e293b] text-white transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="mic" class="w-3.5 h-3.5"></i> Grabar
-                </button>
-                <button id="tab-url" type="button" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="link" class="w-3.5 h-3.5"></i> URL
-                </button>
-            </div>
-
-            <div id="content-record" class="block">
-                <div class="flex justify-center mb-4">
-                    <button id="record-btn" type="button" class="w-20 h-20 rounded-full bg-red-500/20 border-2 border-red-500 flex items-center justify-center transition-all" aria-label="Grabar cinco segundos">
-                        <i data-lucide="mic" class="w-8 h-8 text-red-500"></i>
-                    </button>
-                </div>
-                <p id="record-status" class="text-[#aaff00] text-xs font-bold mb-2 h-4 text-center"></p>
-                <p class="text-[10px] text-slate-500 text-center">Graba 5 segundos de la canción.</p>
-            </div>
-
-            <div id="content-url" class="hidden space-y-4">
+            <div id="content-url" class="space-y-4">
                 <div>
-                    <label for="audio-url-input" class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Enlace del audio</label>
+                    <label for="audio-url-input" class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase">Enlace de audio o video</label>
                     <input type="url" id="audio-url-input" placeholder="https://ejemplo.com/audio.mp3" autocomplete="url" class="w-full bg-[#070b14] border border-slate-700 text-white rounded-xl py-3 px-4 text-sm focus:border-[#aaff00] focus:outline-none">
                 </div>
                 <button id="search-url-btn" type="button" class="w-full btn-gradient py-3 rounded-xl font-bold text-sm text-black transition-all active:scale-95">Buscar canción</button>
@@ -735,17 +716,11 @@
     });
   }
 
-  // Reconocimiento musical: el frontend solo envía MP3 al endpoint configurado.
+  // Reconocimiento musical mediante URL.
   const audioModal = document.getElementById('audio-modal');
   const micBtn = document.getElementById('mic-btn');
   const closeAudioModal = document.getElementById('close-audio-modal');
-  const tabRecord = document.getElementById('tab-record');
-  const tabUrl = document.getElementById('tab-url');
-  const contentRecord = document.getElementById('content-record');
   const contentUrl = document.getElementById('content-url');
-  const audioTabs = document.getElementById('audio-tabs');
-  const recordBtn = document.getElementById('record-btn');
-  const recordStatus = document.getElementById('record-status');
   const audioUrlInput = document.getElementById('audio-url-input');
   const searchUrlBtn = document.getElementById('search-url-btn');
   const contentResult = document.getElementById('content-result');
@@ -756,12 +731,6 @@
   const resultDownloadBtn = document.getElementById('result-download-btn');
   const searchAgainBtn = document.getElementById('search-again-btn');
 
-  let mediaRecorder = null;
-  let audioChunks = [];
-  let recordingTimer = null;
-  let isRecording = false;
-  let cancelRecording = false;
-  let activeAudioStream = null;
   let currentSpotifyUrl = null;
 
   function isMainAppReady() {
@@ -769,36 +738,9 @@
     return hasAcceptedTerms() && appContent && !appContent.classList.contains('hidden');
   }
 
-  function setAudioTab(activeTab) {
-    const recordActive = activeTab === 'record';
-    tabRecord?.classList.toggle('bg-[#1e293b]', recordActive);
-    tabRecord?.classList.toggle('text-white', recordActive);
-    tabRecord?.classList.toggle('text-slate-400', !recordActive);
-    tabUrl?.classList.toggle('bg-[#1e293b]', !recordActive);
-    tabUrl?.classList.toggle('text-white', !recordActive);
-    tabUrl?.classList.toggle('text-slate-400', recordActive);
-    contentRecord?.classList.toggle('hidden', !recordActive);
-    contentUrl?.classList.toggle('hidden', recordActive);
-  }
-
   function resetAudioModal() {
-    if (recordingTimer) clearTimeout(recordingTimer);
-    recordingTimer = null;
-    audioChunks = [];
-    isRecording = false;
-    cancelRecording = false;
     currentSpotifyUrl = null;
     if (audioUrlInput) audioUrlInput.value = '';
-    if (recordStatus) {
-      recordStatus.textContent = '';
-      recordStatus.classList.remove('text-blue-400', 'text-red-400');
-      recordStatus.classList.add('text-[#aaff00]');
-    }
-    if (recordBtn) {
-      recordBtn.disabled = false;
-      recordBtn.classList.remove('animate-pulse', 'bg-slate-800/50', 'border-slate-600');
-      recordBtn.classList.add('bg-red-500/20', 'border-red-500');
-    }
     if (searchUrlBtn) {
       searchUrlBtn.disabled = false;
       searchUrlBtn.textContent = 'Buscar canción';
@@ -810,22 +752,11 @@
     }
     resultSpotifyLink?.classList.add('hidden');
     contentResult?.classList.add('hidden');
-    audioTabs?.classList.remove('hidden');
-    setAudioTab('record');
+    contentUrl?.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
   }
 
   function closeAudioRecognition() {
-    cancelRecording = true;
-    if (recordingTimer) clearTimeout(recordingTimer);
-    recordingTimer = null;
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-      mediaRecorder.onstop = null;
-      mediaRecorder.onerror = null;
-      mediaRecorder.stop();
-    }
-    activeAudioStream?.getTracks().forEach((track) => track.stop());
-    activeAudioStream = null;
     if (audioModal) {
       audioModal.classList.add('hidden');
       audioModal.classList.remove('flex');
@@ -867,22 +798,16 @@
       resultDownloadBtn.classList.add('hidden');
     }
 
-    audioTabs.classList.add('hidden');
-    contentRecord.classList.add('hidden');
     contentUrl.classList.add('hidden');
     contentResult.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
   }
 
-  async function requestMusicRecognition(url, audioBlob = null, filename = '') {
-    const options = audioBlob
-      ? { method: 'POST', body: (() => { const form = new FormData(); form.append('audio', audioBlob, filename); return form; })(), endpoint: 'https://mejv.pro/api/whatmusic' }
-      : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }), endpoint: 'https://mejv.pro/api/whatmusic-url' };
-
-    const response = await fetch(options.endpoint, {
-      method: options.method,
-      headers: options.headers,
-      body: options.body
+  async function requestMusicRecognition(url) {
+    const response = await fetch('https://mejv.pro/api/whatmusic-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
     });
     let data;
     try {
@@ -899,97 +824,7 @@
   audioModal?.addEventListener('click', (event) => {
     if (event.target === audioModal) closeAudioRecognition();
   });
-  tabRecord?.addEventListener('click', () => setAudioTab('record'));
-  tabUrl?.addEventListener('click', () => setAudioTab('url'));
   searchAgainBtn?.addEventListener('click', resetAudioModal);
-
-  recordBtn?.addEventListener('click', async () => {
-    if (isRecording) return;
-    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
-      showToast('Tu navegador no permite grabar audio. Usa la pestaña URL.', true);
-      return;
-    }
-
-    const supportedMimeTypes = [
-      'audio/webm;codecs=opus',
-      'audio/webm',
-      'audio/ogg;codecs=opus',
-      'audio/ogg',
-      'audio/mp4',
-      'audio/mpeg'
-    ];
-    const canCheckMime = typeof MediaRecorder.isTypeSupported === 'function';
-    const mimeType = supportedMimeTypes.find((type) =>
-      canCheckMime ? MediaRecorder.isTypeSupported(type) : type === 'audio/webm'
-    );
-    if (!mimeType) {
-      showToast('Este navegador no permite grabar un formato compatible. Usa la pestaña URL.', true);
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      activeAudioStream = stream;
-      cancelRecording = false;
-      audioChunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType });
-      const actualMimeType = mediaRecorder.mimeType || mimeType;
-      isRecording = true;
-      recordBtn.classList.add('animate-pulse');
-      recordBtn.disabled = true;
-      recordStatus.textContent = 'Grabando... (5s)';
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data?.size) audioChunks.push(event.data);
-      };
-      mediaRecorder.onerror = () => {
-        stream.getTracks().forEach((track) => track.stop());
-        showToast('Ocurrió un error al grabar el audio.', true);
-        resetAudioModal();
-      };
-      mediaRecorder.onstop = async () => {
-        stream.getTracks().forEach((track) => track.stop());
-        activeAudioStream = null;
-        isRecording = false;
-        if (recordingTimer) clearTimeout(recordingTimer);
-        recordingTimer = null;
-        if (cancelRecording) return;
-
-        const audioBlob = new Blob(audioChunks, { type: actualMimeType });
-        if (!audioBlob.size) {
-          showToast('No se pudo obtener audio de la grabación.', true);
-          resetAudioModal();
-          return;
-        }
-
-        recordStatus.textContent = 'Analizando...';
-        recordStatus.classList.replace('text-[#aaff00]', 'text-blue-400');
-        try {
-          const extension = actualMimeType.includes('webm')
-            ? 'webm'
-            : actualMimeType.includes('ogg')
-              ? 'ogg'
-              : actualMimeType.includes('mp4')
-                ? 'mp4'
-                : actualMimeType.includes('mpeg')
-                  ? 'mp3'
-                  : 'audio';
-          await requestMusicRecognition(null, audioBlob, `grabacion.${extension}`);
-        } catch (error) {
-          showToast(error.message || 'No se pudo reconocer la canción.', true);
-          resetAudioModal();
-        }
-      };
-
-      mediaRecorder.start();
-      recordingTimer = setTimeout(() => {
-        if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
-      }, 5000);
-    } catch (error) {
-      showToast(error.name === 'NotAllowedError' ? 'Debes permitir el acceso al micrófono.' : 'No se pudo iniciar la grabación.', true);
-      resetAudioModal();
-    }
-  });
 
   searchUrlBtn?.addEventListener('click', async () => {
     const rawUrl = audioUrlInput.value.trim();
