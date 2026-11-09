@@ -148,6 +148,12 @@
                       </div>
                       <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Instagram</span>
                   </div>
+                  <div class="flex flex-col items-center space-y-2 group cursor-pointer">
+                      <div class="w-16 h-16 rounded-full bg-[#0d1424]/80 border border-blue-500/20 flex items-center justify-center group-hover:border-blue-500/50 group-hover:bg-blue-500/10 transition-all duration-300 shadow-lg">
+                          <i class="fa-brands fa-facebook text-2xl text-blue-400"></i>
+                      </div>
+                      <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Facebook</span>
+                  </div>
               </div>
               <div class="w-full border-t border-slate-800/60 my-10"></div>
               <div class="w-full">
@@ -233,7 +239,7 @@
         </div>
     </div>
     
-        <div id="welcome-modal" class="fixed inset-0 bg-[#070b14]/95 backdrop-blur-md z-[200] hidden items-center justify-center p-6">
+    <div id="welcome-modal" class="fixed inset-0 bg-[#070b14]/95 backdrop-blur-md z-[200] hidden items-center justify-center p-6">
         <div class="bg-[#0d1424] border border-blue-500/30 rounded-3xl w-full max-w-sm p-6 shadow-2xl text-center">
             <div class="w-16 h-16 bg-gradient-to-tr from-blue-600 to-[#aaff00] rounded-full mx-auto flex items-center justify-center mb-4 shadow-lg shadow-blue-500/20">
                 <i data-lucide="download-cloud" class="w-8 h-8 text-black"></i>
@@ -253,7 +259,7 @@
             </div>
         </div>
     </div>
-  <script>
+    <script>
       const TERMS_ACCEPTED_KEY = 'mejv_terms_accepted_v1';
     
       function getUserId() {
@@ -405,6 +411,7 @@
         if (cleanUrl.includes('tiktok.com')) return 'tiktok';
         if (cleanUrl.includes('pinterest.com') || cleanUrl.includes('pin.it')) return 'pinterest';
         if (cleanUrl.includes('instagram.com')) return 'instagram';
+        if (cleanUrl.includes('facebook.com') || cleanUrl.includes('fb.watch')) return 'facebook';
         return null;
       }
     
@@ -429,6 +436,9 @@
         } else if (platform === 'instagram') {
           platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30';
           platformBadge.innerHTML = `<i class="fa-brands fa-instagram text-sm"></i> <span>Instagram</span>`;
+        } else if (platform === 'facebook') {
+          platformBadge.className = 'flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30';
+          platformBadge.innerHTML = `<i class="fa-brands fa-facebook text-sm"></i> <span>Facebook</span>`;
         }
     
         formatContainer.innerHTML = '';
@@ -486,6 +496,14 @@
           inBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-pink-400"></i><span>Vídeo / Carrusel</span>`;
           formatContainer.appendChild(inBtn);
           selectFormat('image', inBtn);
+        } else if (platform === 'facebook') {
+          formatContainer.className = 'grid grid-cols-1 gap-3';
+          const fbBtn = document.createElement('button');
+          fbBtn.type = 'button';
+          fbBtn.className = 'format-opt-btn flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-blue-500/80 bg-blue-600/20 text-blue-400 font-medium text-xs transition-all shadow-sm';
+          fbBtn.innerHTML = `<i data-lucide="video" class="w-4 h-4 text-blue-400"></i><span>Vídeo / Imagen</span>`;
+          formatContainer.appendChild(fbBtn);
+          selectFormat('video', fbBtn);
         }
     
         optionsPanel.classList.remove('hidden');
