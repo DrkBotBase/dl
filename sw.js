@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mejv-pwa-v5';
+const CACHE_NAME = 'mejv-pwa-v6'; 
 const APP_SHELL = [
   './',
   './index.html',
@@ -7,7 +7,13 @@ const APP_SHELL = [
   './192.png',
   './512.png',
   './logo.png',
-  './legal/index.html'
+  './legal/index.html',
+  './descargas-facebook/index.html',
+  './descargas-instagram/index.html',
+  './descargas-pinterest/index.html'
+  './descargas-spotify/index.html'
+  './descargas-tiktok/index.html',
+  './descargas-youtube/index.html',
 ];
 
 self.addEventListener('install', (event) => {
