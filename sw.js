@@ -10,10 +10,10 @@ const APP_SHELL = [
   './legal/index.html',
   './descargas-facebook/index.html',
   './descargas-instagram/index.html',
-  './descargas-pinterest/index.html'
-  './descargas-spotify/index.html'
+  './descargas-pinterest/index.html',
+  './descargas-spotify/index.html',
   './descargas-tiktok/index.html',
-  './descargas-youtube/index.html',
+  './descargas-youtube/index.html'
 ];
 
 self.addEventListener('install', (event) => {
