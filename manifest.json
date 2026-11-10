@@ -8,6 +8,29 @@
   "orientation": "portrait",
   "background_color": "#010715",
   "theme_color": "#010715",
+  "screenshots": [
+    {
+      "src": "/screen1.jpg",
+      "sizes": "1080x2000",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Pantalla Inicio"
+    },
+    {
+      "src": "/screen2.jpg",
+      "sizes": "1080x2000",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Descarga TikTok"
+    },
+    {
+      "src": "/screen3.jpg",
+      "sizes": "1080x2000",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Descarga YouTube"
+    },
+  ],
   "icons": [
     {
       "src": "./192.png",
