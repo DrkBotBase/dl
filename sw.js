@@ -39,8 +39,6 @@ self.addEventListener('fetch', (event) => {
       const isSameOrigin = requestUrl.origin === self.location.origin;
 
       try {
-        // La red siempre tiene prioridad. no-store evita que el navegador
-        // entregue una respuesta antigua desde su propia caché HTTP.
         const networkResponse = await fetch(
           event.request,
           isSameOrigin ? { cache: 'no-store' } : undefined
