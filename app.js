@@ -531,7 +531,35 @@
             if (path.includes('descargas-youtube')) input.placeholder = 'Enlace de YouTube aquí...';
             if (path.includes('descargas-pinterest')) input.placeholder = 'Enlace de Pinterest aquí...';
         }
+        
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const btn = item.querySelector('.faq-btn');
+            const content = item.querySelector('.faq-content');
+            const icon = item.querySelector('.faq-icon');
     
+            btn.addEventListener('click', () => {
+                const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+    
+                faqItems.forEach(otherItem => {
+                    const otherContent = otherItem.querySelector('.faq-content');
+                    const otherIcon = otherItem.querySelector('.faq-icon');
+                    
+                    otherContent.style.maxHeight = '0px';
+                    otherContent.classList.add('opacity-0');
+                    
+                    otherIcon.style.transform = 'rotate(0deg)';
+                });
+                
+                if (!isOpen) {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    content.classList.remove('opacity-0');
+                    
+                    icon.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+        
         initWelcomeModal();
         checkSharedLink();
         checkAccess();

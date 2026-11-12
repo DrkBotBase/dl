@@ -32,81 +32,135 @@
     <link rel="apple-touch-icon" href="https://mejv.pro/assets/images/icon.png">
     
     <link rel="manifest" href="/manifest.json">
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebPage",
-            "@id": "https://dl.mejv.pro/#webpage",
-            "url": "https://dl.mejv.pro/",
-            "name": "MEJV Download - Descarga lo que te gusta",
-            "isPartOf": {
-              "@id": "https://dl.mejv.pro/#website"
-            },
-            "about": {
-              "@id": "https://dl.mejv.pro/#organization"
-            },
-            "primaryImageOfPage": {
-              "@id": "https://dl.mejv.pro/512.png#primaryimage"
-            },
-            "image": {
-              "@id": "https://dl.mejv.pro/512.png#primaryimage"
-            },
-            "description": "Descarga videos y música de YouTube, TikTok, Instagram, Facebook, Spotify y Pinterest de forma rápida y 100% gratis.",
-            "inLanguage": "es"
-          },
-          {
-            "@type": "ImageObject",
-            "@id": "https://dl.mejv.pro/512.png#primaryimage",
-            "url": "https://dl.mejv.pro/512.png",
-            "contentUrl": "https://dl.mejv.pro/512.png"
-          },
-          {
-            "@type": "SoftwareApplication",
-            "@id": "https://dl.mejv.pro/#app",
-            "name": "MEJV Download",
-            "applicationCategory": "MultimediaApplication",
-            "operatingSystem": "Web, Android, iOS",
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "USD"
-            },
-            "author": {
-              "@id": "https://dl.mejv.pro/#organization"
-            },
-            "screenshot": [
-              "https://dl.mejv.pro/screen1.jpg",
-              "https://dl.mejv.pro/screen2.jpg",
-              "https://dl.mejv.pro/screen3.jpg"
-            ]
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://dl.mejv.pro/#website",
-            "url": "https://dl.mejv.pro/",
-            "name": "MEJV Download",
-            "publisher": {
-              "@id": "https://dl.mejv.pro/#organization"
-            },
-            "inLanguage": "es"
-          },
-          {
-            "@type": "Organization",
-            "@id": "https://dl.mejv.pro/#organization",
-            "name": "MEJV Download",
-            "url": "https://dl.mejv.pro/",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://dl.mejv.pro/522.png",
-              "width": 512,
-              "height": 512
-            }
-          }
-        ]
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://dl.mejv.pro/#webpage",
+      "url": "https://dl.mejv.pro/",
+      "name": "MEJV Download - Descarga lo que te gusta",
+      "isPartOf": {
+        "@id": "https://dl.mejv.pro/#website"
+      },
+      "about": {
+        "@id": "https://dl.mejv.pro/#organization"
+      },
+      "primaryImageOfPage": {
+        "@id": "https://dl.mejv.pro/512.png#primaryimage"
+      },
+      "image": {
+        "@id": "https://dl.mejv.pro/512.png#primaryimage"
+      },
+      "description": "Descarga videos y música de YouTube, TikTok, Instagram, Facebook, Spotify y Pinterest de forma rápida y 100% gratis.",
+      "inLanguage": "es",
+      "mainEntity": {
+        "@id": "https://dl.mejv.pro/#faq"
       }
-    </script>
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://dl.mejv.pro/512.png#primaryimage",
+      "url": "https://dl.mejv.pro/512.png",
+      "contentUrl": "https://dl.mejv.pro/512.png"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://dl.mejv.pro/#app",
+      "name": "MEJV Download",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web, Android, iOS",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@id": "https://dl.mejv.pro/#organization"
+      },
+      "screenshot": [
+        "https://dl.mejv.pro/screen1.jpg",
+        "https://dl.mejv.pro/screen2.jpg",
+        "https://dl.mejv.pro/screen3.jpg"
+      ],
+      "featureList": [
+        "Descarga de videos de TikTok sin marca de agua",
+        "Descarga de videos y reels de Instagram",
+        "Descarga de música de Spotify",
+        "Descarga de audio y video de YouTube en varias calidades",
+        "Descarga de videos de Facebook en HD",
+        "Descarga de videos e imágenes de Pinterest",
+        "Funciona como PWA sin instalación"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://dl.mejv.pro/#website",
+      "url": "https://dl.mejv.pro/",
+      "name": "MEJV Download",
+      "publisher": {
+        "@id": "https://dl.mejv.pro/#organization"
+      },
+      "inLanguage": "es"
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://dl.mejv.pro/#organization",
+      "name": "MEJV Download",
+      "url": "https://dl.mejv.pro/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://dl.mejv.pro/522.png",
+        "width": 512,
+        "height": 512
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://dl.mejv.pro/#faq",
+      "inLanguage": "es",
+      "isPartOf": {
+        "@id": "https://dl.mejv.pro/#webpage"
+      },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué es MEJV Download?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MEJV Download es una herramienta web gratuita que te permite descargar videos, audios e imágenes de múltiples plataformas como TikTok, Instagram, YouTube, Facebook, Spotify y Pinterest en un solo lugar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Necesito instalar algo para usarlo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. MEJV funciona directamente desde tu navegador. Sin embargo, si usas Android o PC, puedes instalarlo como una aplicación (PWA) desde el menú de tu navegador para acceder más rápido, como si fuera una app nativa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Es seguro y legal?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí, nuestro servicio no almacena tus archivos ni requiere tu contraseña de las redes sociales. Te recordamos que debes usar el contenido descargado respetando los derechos de autor y dando crédito a los creadores originales."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Por qué no me funciona un enlace?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Algunos videos pueden ser privados, haber sido eliminados por el creador o pertenecer a cuentas restringidas. Asegúrate de que el enlace sea público y de que lo estás copiando de forma correcta."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
     
     <meta name="google-site-verification" content="KA-5ytOe-hwWqgAjxHN2gyMcQ70jSagi7EHnM-d72oI"/>
 
@@ -260,6 +314,55 @@
                   </div>
               </div>
           </main>
+          <section class="w-full max-w-2xl mx-auto mt-12 px-2">
+              <h2 class="text-lg font-extrabold text-white text-center mb-6">Preguntas Frecuentes</h2>
+              <div class="space-y-3">
+                  <div class="faq-item bg-[#0d1424] border border-slate-700/50 rounded-xl overflow-hidden transition-colors duration-300">
+                      <button class="faq-btn w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none group">
+                          <span class="font-semibold text-sm text-slate-200 group-hover:text-[#aaff00] transition-colors">¿Qué es MEJV Download?</span>
+                          <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform duration-300 ease-in-out"></i>
+                      </button>
+                      <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out px-5 text-xs text-slate-400 leading-relaxed">
+                          <div class="pb-4 border-t border-slate-800/50 pt-3">
+                            MEJV Download es una herramienta web gratuita que te permite descargar videos, audios e imágenes de múltiples plataformas como TikTok, Instagram, YouTube, Facebook, Spotify y Pinterest en un solo lugar.
+                          </div>
+                      </div>
+                  </div>
+                  <div class="faq-item bg-[#0d1424] border border-slate-700/50 rounded-xl overflow-hidden transition-colors duration-300">
+                      <button class="faq-btn w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none group">
+                          <span class="font-semibold text-sm text-slate-200 group-hover:text-[#aaff00] transition-colors">¿Necesito instalar algo para usarlo?</span>
+                          <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform duration-300 ease-in-out"></i>
+                      </button>
+                      <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out px-5 text-xs text-slate-400 leading-relaxed">
+                          <div class="pb-4 border-t border-slate-800/50 pt-3">
+                              No. MEJV funciona directamente desde tu navegador. Sin embargo, si usas Android o PC, puedes instalarlo como una aplicación (PWA) desde el menú de tu navegador para acceder más rápido, como si fuera una app nativa.
+                        </div>
+                      </div>
+                  </div>
+                  <div class="faq-item bg-[#0d1424] border border-slate-700/50 rounded-xl overflow-hidden transition-colors duration-300">
+                      <button class="faq-btn w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none group">
+                          <span class="font-semibold text-sm text-slate-200 group-hover:text-[#aaff00] transition-colors">¿Es seguro y legal?</span>
+                          <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform duration-300 ease-in-out"></i>
+                      </button>
+                      <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out px-5 text-xs text-slate-400 leading-relaxed">
+                          <div class="pb-4 border-t border-slate-800/50 pt-3">
+                              Sí, nuestro servicio no almacena tus archivos ni requiere tu contraseña de las redes sociales. Te recordamos que debes usar el contenido descargado respetando los derechos de autor y dando crédito a los creadores originales.
+                          </div>
+                      </div>
+                  </div>
+                  <div class="faq-item bg-[#0d1424] border border-slate-700/50 rounded-xl overflow-hidden transition-colors duration-300">
+                      <button class="faq-btn w-full text-left px-5 py-4 flex justify-between items-center focus:outline-none group">
+                          <span class="font-semibold text-sm text-slate-200 group-hover:text-[#aaff00] transition-colors">¿Por qué no me funciona un enlace?</span>
+                          <i data-lucide="chevron-down" class="faq-icon w-5 h-5 text-slate-400 transition-transform duration-300 ease-in-out"></i>
+                      </button>
+                      <div class="faq-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out px-5 text-xs text-slate-400 leading-relaxed">
+                          <div class="pb-4 border-t border-slate-800/50 pt-3">
+                              Algunos videos pueden ser privados, haber sido eliminados por el creador o pertenecer a cuentas restringidas. Asegúrate de que el enlace sea público y de que lo estás copiando de forma correcta.
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
           <footer class="w-full mt-10 pt-8 pb-6 border-t border-slate-800/60 relative z-10">
             <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-center mb-8">
                 <a href="/descargas-tiktok/" class="text-slate-400 hover:text-[#aaff00] text-xs font-medium transition-colors flex items-center justify-center gap-1.5">
@@ -362,7 +465,7 @@
             </div>
         </div>
     </div>
-
+    
     <script src="./app.js"></script>
     
     <!-- Adsterra -->
